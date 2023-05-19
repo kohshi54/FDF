@@ -18,91 +18,71 @@ void	pixel_put(t_data *data, int x, int y, int color)
 	*(unsigned int*)dst = color;
 }
 
-#define	DX(a, b) (a > b ? 1 : (-1))
-#define	DY(a, b) (a > b ? 1 : (-1))
-
 #include <math.h>
-void	line_put(t_data *data, double x0, double y0, double x1, double y1, int color)
+#include <stdio.h>
+
+typedef	struct line_info
 {
-	double	delta_x;
-	double	delta_y;
-
-	delta_x = x1 - x0;
-	delta_y = y1 - y0;
-
 	int	dx;
 	int	dy;
+	int	x;
+	int	y;
+	int	deltaA;
+	int	deltaB;	
+	int	nabla;
+}	t_line_info	;
 
-	dx = DX(x1, x0);
-	dy = DY(y1, y0);
+void	put_line(t_data *data, int x0, int y0, int x1, int y1, int color)
+{
+	t_line_info	info;
+	int	i;
 
-	double	x;
-	double	y;
+	if (x0 < x1) info.dx = 1; else info.dx = -1;
+	if (y0 < y1) info.dy = 1; else info.dy = -1;
 
-	x = x0;
-	y = y0;
-	if (delta_x > delta_y)
+	info.x = x0;
+	info.y = y0;
+	pixel_put(data, info.x, info.y, color);
+
+	info.deltaA = fabs((float)(x1 - x0));
+	info.deltaB = fabs((float)(y1 - y0));
+	if (info.deltaA > info.deltaB)
 	{
-		while (fabs(x - x1) > 1)
+		info.nabla = 2 * info.deltaB - info.deltaA;
+		i = 0;
+		while (++i <= info.deltaA)
 		{
-			if (delta_y != 0)
-				y = y + (delta_y / delta_x) * dy;
-			x = x + dx;
-			pixel_put(data, x, y, color);
+			if (info.nabla >= 0)
+			{
+				info.nabla = info.nabla + 2 * info.deltaB - 2 * info.deltaA;
+				info.y = info.y + info.dy;
+			}
+			else
+			{
+				info.nabla = info.nabla + 2 * info.deltaB;
+			}
+			info.x = info.x + info.dx;
+			pixel_put(data, info.x, info.y, color);
 		}
 	}
 	else
 	{
-		while (fabs(y - y1) > 1)
+		info.nabla = 2 * info.deltaA - info.deltaB;
+		i = 0;
+		while (++i <= info.deltaB)
 		{
-			if (delta_x != 0)
-				x = x + (delta_x / delta_y) * dx;
-			y = y + dy;
-			pixel_put(data, x, y, color);
+			if (info.nabla >= 0)
+			{
+				info.nabla = info.nabla + 2 * info.deltaA - 2 * info.deltaB;
+				info.x = info.x + info.dx;
+			}
+			else
+			{
+				info.nabla = info.nabla + 2 * info.deltaA;
+			}
+			info.y = info.y + info.dy;
+			pixel_put(data, info.x, info.y, color);
 		}
-	}
-}
-
-void	draw_box(t_data *data, size_t x, size_t y, int color)
-{
-	size_t	i;
-	size_t	j;
-
-	i = 10;
-	while (i < x)
-	{
-		pixel_put(data, i, 10, color);
-		pixel_put(data, 10, i, color);
-		i++;
-	}
-	j = 10;
-	while (j < y)
-	{
-		pixel_put(data, i, j, color);
-		pixel_put(data, j, i, color);
-		j++;
-	}
-}
-
-void	draw_triagngle(t_data *data, size_t x, size_t y, int color)
-{
-	size_t	i;
-	size_t	j;
-
-	i = 0;
-	y++;
-	x++;
-	while (i < 100)
-	{
-		pixel_put(data, 200 + i, 10 + i, color);
-		pixel_put(data, 200 - i, 10 + i, color);
-		i++;
-	}
-	j = 200 - i;
-	while (j < 200 + i)
-	{
-		pixel_put(data, j, 10 + i, color);
-		j++;
 	}
 }
 
@@ -118,12 +98,19 @@ int	main(void)
 	img.img = mlx_new_image(mlx, 1920, 1080);
 	img.addr = mlx_get_data_addr(img.img, &img.bits_per_pixel, &img.line_length, &img.endian);
 
-	line_put(&img, 10, 10, 300, 100, 0x00FF0000);
-	line_put(&img, 100, 100, 300, 100, 0x00FF0000);
-	line_put(&img, 100, 100, 10, 10, 0x00FF0000);
-	line_put(&img, 10, 10, 100, 300, 0x00FF0000);
-	line_put(&img, 100, 100, 100, 500, 0x00FF0000);
-	line_put(&img, 300, 100, 100, 500, 0x00FF0000);
+
+	put_line(&img, 10, 10, 100, 100, 0x00FF0000);
+	put_line(&img, 10, 10, 200, 100, 0x00FF0000);
+	put_line(&img, 10, 10, 100, 200, 0x00FF0000);
+	put_line(&img, 10, 100, 100, 10, 0x00FF0000);
+	put_line(&img, 10, 10, 100, 10, 0x00FF0000);
+	put_line(&img, 10, 10, 10, 100, 0x00FF0000);
+	// put_line(&img, 10, 10, 200, 100, 0x00FF0000);
+	// put_line(&img, 10, 10, 100, 200, 0x00FF0000);
+	// put_line(&img, 10, 10, 10, 100, 0x00FF0000);
+	// put_line(&img, 10, 10, 100, 10, 0x00FF0000);
+	// put_line(&img, 10, 100, 200, 10, 0x00FF0000);
+	// put_line(&img, 10, 100, 100, 10, 0x00FF0000);
 	mlx_put_image_to_window(mlx, mlx_win, img.img, 0, 0);
 	mlx_loop(mlx);
 }
