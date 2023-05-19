@@ -2,7 +2,7 @@ NAME = fdf
 CC = cc
 CFLAGS = -Wall -Wextra -Werror
 
-SRCS = fdf.c
+SRCS = fdf.c ft_put_line.c
 OBJS = $(SRCS:%.c=%.o)
 
 LIBFT = LIBFT/libft.a
