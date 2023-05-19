@@ -28,7 +28,7 @@ void	put_line_landscape(t_data *data, t_line_info info, int color)
 		}
 		info.x = info.x + info.dx;
 		put_pixel(data, info.x, info.y, color);
-	}	
+	}
 }
 
 void	put_line_portrait(t_data *data, t_line_info info, int color)

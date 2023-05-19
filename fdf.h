@@ -1,9 +1,12 @@
 #ifndef FDF_H
 # define FDF_H
 
-#include <mlx.h>
-#include <unistd.h>
-#include <math.h>
+# include <mlx.h>
+# include <unistd.h>
+# include <math.h>
+# include "LIBFT/libft.h"
+# include "LIBFT/ft_printf.h"
+# include "LIBFT/get_next_line.h"
 
 typedef struct	s_data {
 	void	*img;
