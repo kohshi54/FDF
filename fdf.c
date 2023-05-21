@@ -1,6 +1,4 @@
 #include "fdf.h"
-#include "fcntl.h"
-#include <string.h>
 
 t_coordinate	rotate_x(t_coordinate	coordinate, double radian)
 {
@@ -69,6 +67,7 @@ void	put_axis(t_data img, double radian)
 
 void	put_cube(t_data img, double radian)
 {
+	// 立方体の各座標
 	t_coordinate	a;
 	a.x = 0;
 	a.y = 0;
@@ -125,7 +124,6 @@ void	put_cube(t_data img, double radian)
 	put_line(&img, translate(d, radian), translate(h, radian), 0x00FFFFFF);
 }
 
-// int	main(int argc, char *argv[])
 int	main(void)
 {
 	void	*mlx;
