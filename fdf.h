@@ -14,7 +14,7 @@ typedef struct	s_data {
 	int		bits_per_pixel;
 	int		line_length;
 	int		endian;
-}				t_data;
+}	t_data;
 
 typedef	struct line_info
 {
@@ -30,6 +30,20 @@ typedef	struct line_info
 #  define step(a, b) ((a < b) ? 1 : -1);
 # endif
 
-void	put_line(t_data *data, int x0, int y0, int x1, int y1, int color);
+typedef	struct coordinate
+{
+	int	x;
+	int	y;
+	int	z;
+}	t_coordinate ;
+
+void	put_line(t_data *data, t_coordinate start, t_coordinate end, int color);
+# ifndef X_WIDTH
+#  define X_WIDTH 1920
+# endif
+
+# ifndef Y_WIDTH
+#  define Y_WIDTH 1080
+# endif
 
 #endif
