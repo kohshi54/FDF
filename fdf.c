@@ -32,9 +32,9 @@ t_coordinate	rotate_z(t_coordinate	coordinate, double radian)
 
 t_coordinate	zoom_in(t_coordinate	coordinate)
 {
-	coordinate.x /= 2;
-	coordinate.y /= 2;
-	coordinate.z /= 2;
+	coordinate.x *= 0.5;
+	coordinate.y *= 0.5;
+	coordinate.z *= 0.5;
 	return (coordinate);
 }
 
@@ -43,6 +43,14 @@ t_coordinate	zoom_out(t_coordinate	coordinate)
 	coordinate.x *= 2;
 	coordinate.y *= 2;
 	coordinate.z *= 2;
+	return (coordinate);
+}
+int	param;
+t_coordinate	zoom(t_coordinate	coordinate)
+{
+	coordinate.x *= (param ? param : (10 + param) / 10);
+	coordinate.y *= (param ? param : (10 + param) / 10);
+	coordinate.z *= (param ? param : (10 + param) / 10);
 	return (coordinate);
 }
 
@@ -54,6 +62,9 @@ t_coordinate	move(t_coordinate	coordinate)
 	return (coordinate);
 }
 
+bool	zoom_in_flg;
+bool	zoom_out_flg;
+bool	zoom_flg;
 
 t_coordinate	translate(t_coordinate	coordinate)
 {
@@ -64,7 +75,12 @@ t_coordinate	translate(t_coordinate	coordinate)
 	new = rotate_z(coordinate, radian);
 	radian = atan2(M_SQRT2, 1);
 	new = rotate_x(new, radian);
-	new = zoom_in(new);
+	if (zoom_flg)
+		new = zoom(new);
+	if (zoom_in_flg == 1)
+		new = zoom_in(new);
+	if (zoom_out_flg == 1)
+		new = zoom_out(new);
 	new = move(new);
 	return (new);
 }
@@ -108,7 +124,6 @@ void	put_cube(t_data img)
 	put_line(&img, translate(b), translate(f), 0x00FFFFFF);
 	put_line(&img, translate(c), translate(g), 0x00FFFFFF);
 	put_line(&img, translate(d), translate(h), 0x00FFFFFF);
-
 }
 
 typedef struct	s_mlx_info {
@@ -120,15 +135,26 @@ typedef struct	s_mlx_info {
 int	key_hook(int keycode, t_mlx_info *vars)
 {
 	(void)vars;
-	(void)keycode;
-	// ft_printf("Hello from key_hook!\n");
+	// ft_printf("keycode: %d\n", keycode);
+	if (keycode == 34) // zoom in when i is pressed.
+	{
+		ft_printf("zoom in\n");
+		zoom_flg = 1;
+		param--;
+	}
+	else if (keycode == 31) // zoom out when o is pressed.
+	{
+		ft_printf("zoom out\n");
+		zoom_flg = 1;
+		param++;
+	}
 	return (0);
 }
 
 int	close_win(int keycode, t_mlx_info *vars)
 {
-	// close when tab key is pressed.
-	if (keycode == '0')
+	// close when esc key is pressed.
+	if (keycode == 53)
 	{
 		mlx_destroy_window(vars->mlx, vars->mlx_win);
 		exit(EXIT_SUCCESS);
@@ -150,10 +176,12 @@ int	main(void)
 {
 	t_mlx_info	mlx_info;
 
+	param = 0;
 	mlx_info.mlx = mlx_init();
-	mlx_info.mlx_win = mlx_new_window(mlx_info.mlx, 1920, 1080, "Hello world!");
+	mlx_info.mlx_win = mlx_new_window(mlx_info.mlx, 1920, 1080, "FDF");
 	mlx_key_hook(mlx_info.mlx_win, key_hook, &mlx_info);
 	mlx_hook(mlx_info.mlx_win, 2, 1L<<0, close_win, &mlx_info);
 	mlx_loop_hook(mlx_info.mlx, loop_handler, &mlx_info);
 	mlx_loop(mlx_info.mlx);
+	return (0);
 }
