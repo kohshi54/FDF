@@ -30,6 +30,31 @@ t_coordinate	rotate_z(t_coordinate	coordinate, double radian)
 	return (new);
 }
 
+t_coordinate	zoom_in(t_coordinate	coordinate)
+{
+	coordinate.x /= 2;
+	coordinate.y /= 2;
+	coordinate.z /= 2;
+	return (coordinate);
+}
+
+t_coordinate	zoom_out(t_coordinate	coordinate)
+{
+	coordinate.x *= 2;
+	coordinate.y *= 2;
+	coordinate.z *= 2;
+	return (coordinate);
+}
+
+t_coordinate	move(t_coordinate	coordinate)
+{
+	coordinate.x += 100;
+	coordinate.y += 100;
+	coordinate.z += 100;
+	return (coordinate);
+}
+
+
 t_coordinate	translate(t_coordinate	coordinate)
 {
 	t_coordinate	new;
@@ -39,6 +64,8 @@ t_coordinate	translate(t_coordinate	coordinate)
 	new = rotate_z(coordinate, radian);
 	radian = atan2(M_SQRT2, 1);
 	new = rotate_x(new, radian);
+	new = zoom_in(new);
+	new = move(new);
 	return (new);
 }
 
@@ -84,21 +111,49 @@ void	put_cube(t_data img)
 
 }
 
-int	main(void)
-{
+typedef struct	s_mlx_info {
 	void	*mlx;
 	void	*mlx_win;
 	t_data	img;
+}				t_mlx_info;
 
-	mlx = mlx_init();
-	mlx_win = mlx_new_window(mlx, 1920, 1080, "Hello world!");
+int	key_hook(int keycode, t_mlx_info *vars)
+{
+	(void)vars;
+	(void)keycode;
+	// printf("Hello from key_hook!\n");
+	return (0);
+}
 
-	img.img = mlx_new_image(mlx, 1920, 1080);
-	img.addr = mlx_get_data_addr(img.img, &img.bits_per_pixel, &img.line_length, &img.endian);
+int	close_win(int keycode, t_mlx_info *vars)
+{
+	(void)keycode;
+	// if (keycode == 'a')
+	// {
+		mlx_destroy_window(vars->mlx, vars->mlx_win);
+		exit(EXIT_SUCCESS);
+	// }
+	return (0);
+}
 
-	put_axis(img);
-	put_cube(img);
-	mlx_put_image_to_window(mlx, mlx_win, img.img, 0, 0);
-	// mlx_key_hook(&img, my_key_hook, &theta);
-	mlx_loop(mlx);
+int	handler(t_mlx_info *mlx_info)
+{
+	mlx_info->img.img = mlx_new_image(mlx_info->mlx, 1920, 1080);
+	mlx_info->img.addr = mlx_get_data_addr(mlx_info->img.img, &(mlx_info->img.bits_per_pixel), &(mlx_info->img.line_length), &(mlx_info->img.endian));
+	put_axis(mlx_info->img);
+	put_cube(mlx_info->img);
+	mlx_put_image_to_window(mlx_info->mlx, mlx_info->mlx_win, mlx_info->img.img, 0, 0);
+	return (0);
+}
+
+int	main(void)
+{
+	t_mlx_info	mlx_info;
+
+	mlx_info.mlx = mlx_init();
+	mlx_info.mlx_win = mlx_new_window(mlx_info.mlx, 1920, 1080, "Hello world!");
+	mlx_key_hook(mlx_info.mlx_win, key_hook, &mlx_info);
+	// mlx_hook(vars.win, 2, 1L<<0, close_win, &vars);
+	mlx_loop_hook(mlx_info.mlx, handler, &mlx_info);
+	mlx_loop(mlx_info.mlx);
 }
