@@ -45,17 +45,14 @@ t_coordinate	translate(t_coordinate	coordinate)
 void	put_axis(t_data img)
 {
 	// 座標軸
-	t_coordinate	x_axis = {X_WIDTH / 3 - 50, 0, 0};
-	t_coordinate	y_axis = {0, Y_WIDTH / 2, 0};
-	t_coordinate	z_axis = {0, -(Y_WIDTH / 3), 0};
 	t_coordinate	origin = {0, 0, 0};
 
-	put_line(&img, origin, (t_coordinate){500, 0, 0}, 0xC3FF0000);
-	put_line(&img, origin, (t_coordinate){0, 500, 0}, 0xC300FF00);
+	put_line(&img, origin, (t_coordinate){400, 0, 0}, 0xC3FF0000);
+	put_line(&img, origin, (t_coordinate){0, 400, 0}, 0xC300FF00);
 
-	put_line(&img, translate((t_coordinate){0, 0, 0}), translate(x_axis), 0x00FF0000);
-	put_line(&img, translate(origin), translate(y_axis), 0x0000FF00);
-	put_line(&img, origin, z_axis, 0x000000FF);
+	put_line(&img, translate((t_coordinate){0, 0, 0}), translate((t_coordinate){500, 0, 0}), 0x00FF0000);
+	put_line(&img, translate(origin), translate((t_coordinate){0, 500, 0}), 0x0000FF00);
+	put_line(&img, origin, (t_coordinate){0, -400, 0}, 0x000000FF);
 }
 
 void	put_cube(t_data img)
