@@ -121,22 +121,22 @@ int	key_hook(int keycode, t_mlx_info *vars)
 {
 	(void)vars;
 	(void)keycode;
-	// printf("Hello from key_hook!\n");
+	// ft_printf("Hello from key_hook!\n");
 	return (0);
 }
 
 int	close_win(int keycode, t_mlx_info *vars)
 {
-	(void)keycode;
-	// if (keycode == 'a')
-	// {
+	// close when tab key is pressed.
+	if (keycode == '0')
+	{
 		mlx_destroy_window(vars->mlx, vars->mlx_win);
 		exit(EXIT_SUCCESS);
-	// }
+	}
 	return (0);
 }
 
-int	handler(t_mlx_info *mlx_info)
+int	loop_handler(t_mlx_info *mlx_info)
 {
 	mlx_info->img.img = mlx_new_image(mlx_info->mlx, 1920, 1080);
 	mlx_info->img.addr = mlx_get_data_addr(mlx_info->img.img, &(mlx_info->img.bits_per_pixel), &(mlx_info->img.line_length), &(mlx_info->img.endian));
@@ -153,7 +153,7 @@ int	main(void)
 	mlx_info.mlx = mlx_init();
 	mlx_info.mlx_win = mlx_new_window(mlx_info.mlx, 1920, 1080, "Hello world!");
 	mlx_key_hook(mlx_info.mlx_win, key_hook, &mlx_info);
-	// mlx_hook(vars.win, 2, 1L<<0, close_win, &vars);
-	mlx_loop_hook(mlx_info.mlx, handler, &mlx_info);
+	mlx_hook(mlx_info.mlx_win, 2, 1L<<0, close_win, &mlx_info);
+	mlx_loop_hook(mlx_info.mlx, loop_handler, &mlx_info);
 	mlx_loop(mlx_info.mlx);
 }
