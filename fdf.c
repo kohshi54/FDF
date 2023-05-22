@@ -30,17 +30,20 @@ t_coordinate	rotate_z(t_coordinate	coordinate, double radian)
 	return (new);
 }
 
-t_coordinate	translate(t_coordinate	coordinate, double radian)
+// t_coordinate	translate(t_coordinate	coordinate, double radian)
+t_coordinate	translate(t_coordinate	coordinate)
 {
 	t_coordinate	new;
+	double			radian;
 
+	radian = atan(1);
 	new = rotate_z(coordinate, radian);
-	radian = 55 * M_PI / 180.0;
+	radian = atan2(M_SQRT2, 1);
 	new = rotate_x(new, radian);
 	return (new);
 }
 
-void	put_axis(t_data img, double radian)
+void	put_axis(t_data img)
 {
 	// 座標軸
 	t_coordinate	x_axis;
@@ -60,12 +63,14 @@ void	put_axis(t_data img, double radian)
 	origin.y = 0;
 	origin.z = 0;
 
-	put_line(&img, translate(origin, radian), translate(x_axis, radian), 0x00FF0000);
-	put_line(&img, translate(origin, radian), translate(y_axis, radian), 0x0000FF00);
+	// put_line(&img, translate(origin, radian), translate(x_axis, radian), 0x00FF0000);
+	put_line(&img, translate(origin), translate(x_axis), 0x00FF0000);
+	// put_line(&img, translate(origin, radian), translate(y_axis, radian), 0x0000FF00);
+	put_line(&img, translate(origin), translate(y_axis), 0x0000FF00);
 	put_line(&img, origin, z_axis, 0x000000FF);
 }
 
-void	put_cube(t_data img, double radian)
+void	put_cube(t_data img)
 {
 	// 立方体の各座標
 	t_coordinate	a;
@@ -108,6 +113,7 @@ void	put_cube(t_data img, double radian)
 	h.y = 100;
 	h.z = 100;
 
+/*
 	put_line(&img, translate(a, radian), translate(b, radian), 0x00FFFFFF);
 	put_line(&img, translate(a, radian), translate(c, radian), 0x00FFFFFF);
 	put_line(&img, translate(d, radian), translate(b, radian), 0x00FFFFFF);
@@ -122,6 +128,23 @@ void	put_cube(t_data img, double radian)
 	put_line(&img, translate(b, radian), translate(f, radian), 0x00FFFFFF);
 	put_line(&img, translate(c, radian), translate(g, radian), 0x00FFFFFF);
 	put_line(&img, translate(d, radian), translate(h, radian), 0x00FFFFFF);
+*/
+
+	put_line(&img, translate(a), translate(b), 0x00FFFFFF);
+	put_line(&img, translate(a), translate(c), 0x00FFFFFF);
+	put_line(&img, translate(d), translate(b), 0x00FFFFFF);
+	put_line(&img, translate(d), translate(c), 0x00FFFFFF);
+
+	put_line(&img, translate(e), translate(f), 0x00FFFFFF);
+	put_line(&img, translate(e), translate(g), 0x00FFFFFF);
+	put_line(&img, translate(h), translate(f), 0x00FFFFFF);
+	put_line(&img, translate(h), translate(g), 0x00FFFFFF);
+
+	put_line(&img, translate(a), translate(e), 0x00FFFFFF);
+	put_line(&img, translate(b), translate(f), 0x00FFFFFF);
+	put_line(&img, translate(c), translate(g), 0x00FFFFFF);
+	put_line(&img, translate(d), translate(h), 0x00FFFFFF);
+
 }
 
 int	main(void)
@@ -129,8 +152,8 @@ int	main(void)
 	void	*mlx;
 	void	*mlx_win;
 	t_data	img;
-	double	radian;
-	int	theta;
+	// double	radian;
+	// int	theta;
 
 	mlx = mlx_init();
 	mlx_win = mlx_new_window(mlx, 1920, 1080, "Hello world!");
@@ -138,11 +161,10 @@ int	main(void)
 	img.img = mlx_new_image(mlx, 1920, 1080);
 	img.addr = mlx_get_data_addr(img.img, &img.bits_per_pixel, &img.line_length, &img.endian);
 
-	theta = 45;
-	radian = theta * M_PI / 180.0;
-
-	put_axis(img, radian);
-	put_cube(img, radian);
+	// put_axis(img, radian);
+	put_axis(img);
+	// put_cube(img, radian);
+	put_cube(img);
 	mlx_put_image_to_window(mlx, mlx_win, img.img, 0, 0);
 	// mlx_key_hook(&img, my_key_hook, &theta);
 	mlx_loop(mlx);
