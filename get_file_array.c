@@ -12,6 +12,13 @@ typedef	struct s_coordinate
 	int					z;
 }	t_coordinate;
 
+typedef struct s_map_info
+{
+	t_coordinate	***map;
+	size_t			height;
+	size_t			width;
+}	t_map_info;
+
 void	print_map(t_coordinate ***map, size_t width, size_t height)
 {
 	size_t	i;
@@ -48,42 +55,36 @@ void	fill_line(t_coordinate ***map, char **line_spl, size_t counter_y, size_t wi
 	}
 }
 
-t_coordinate	***create_map(char *filename)
+void	create_map(char *filename, t_map_info *map_info)
 {
-	t_coordinate	***map;
 	int				fd;
-	size_t			width;
-	size_t			height;
 	size_t			counter_y;
 	char			*line;
 	char			**line_spl;
 
-	height = get_height(filename);
-	width = get_width(filename);
-	map = malloc(sizeof(t_coordinate *) * height);
+	map_info->height = get_height(filename);
+	map_info->width = get_width(filename);
+	map_info->map = malloc(sizeof(t_coordinate *) * map_info->height);
 	fd = open(filename, O_RDONLY);
 	counter_y = 0;
 	// while ((line = get_next_line(fd)))
-	while (counter_y < height)
+	while (counter_y < map_info->height)
 	{
 		line = get_next_line(fd);
-		map[counter_y] = malloc(sizeof(t_coordinate *) * width);
+		map_info->map[counter_y] = malloc(sizeof(t_coordinate *) * map_info->width);
 		line_spl = ft_split(line, ' ');
-		fill_line(map, line_spl, counter_y, width);
+		fill_line(map_info->map, line_spl, counter_y, map_info->width);
 		counter_y++;
 	}
-
-	// print_map(map, width, height);
-	return (map);
 }
 
 int	main(int argc, char *argv[])
 {
-	t_coordinate	***map;
+	t_map_info	map_info;
 
 	if (argc != 2)
 		return (0);
-	map = create_map(argv[1]);
-
+	create_map(argv[1], &map_info);
+	print_map(map_info.map, map_info.width, map_info.height);
 	return (0);
 }
