@@ -30,125 +30,58 @@ t_coordinate	rotate_z(t_coordinate	coordinate, double radian)
 	return (new);
 }
 
-t_coordinate	zoom_in(t_coordinate	coordinate)
-{
-	coordinate.x *= 0.5;
-	coordinate.y *= 0.5;
-	coordinate.z *= 0.5;
-	return (coordinate);
-}
-
-t_coordinate	zoom_out(t_coordinate	coordinate)
-{
-	coordinate.x *= 2;
-	coordinate.y *= 2;
-	coordinate.z *= 2;
-	return (coordinate);
-}
-int	param;
-t_coordinate	zoom(t_coordinate	coordinate)
-{
-	coordinate.x *= (param ? param : (10 + param) / 10);
-	coordinate.y *= (param ? param : (10 + param) / 10);
-	coordinate.z *= (param ? param : (10 + param) / 10);
-	return (coordinate);
-}
-
-t_coordinate	move(t_coordinate	coordinate)
-{
-	coordinate.x += 100;
-	coordinate.y += 100;
-	coordinate.z += 100;
-	return (coordinate);
-}
-
-bool	zoom_in_flg;
-bool	zoom_out_flg;
-bool	zoom_flg;
-
-t_coordinate	translate(t_coordinate	coordinate)
+t_coordinate	move(t_coordinate coordinate)
 {
 	t_coordinate	new;
-	double			radian;
 
-	radian = atan(1);
-	new = rotate_z(coordinate, radian);
-	radian = atan2(M_SQRT2, 1);
-	new = rotate_x(new, radian);
-	if (zoom_flg)
-		new = zoom(new);
-	if (zoom_in_flg == 1)
-		new = zoom_in(new);
-	if (zoom_out_flg == 1)
-		new = zoom_out(new);
-	new = move(new);
+	new.x = coordinate.x + 100;
+	new.y = coordinate.y + 100;
+	// new.z = coordinate.z + 100;
 	return (new);
 }
 
-void	put_axis(t_data img)
+void	set_default_base_vector(double base_vector[3][3])
 {
-	// 座標軸
-	t_coordinate	origin = {0, 0, 0};
+	base_vector[0][0] = 1 / sqrt(2);
+	base_vector[1][0] = 1 / sqrt(2);
+	base_vector[2][0] = 0;
 
-	put_line(&img, origin, (t_coordinate){400, 0, 0}, 0xC3FF0000);
-	put_line(&img, origin, (t_coordinate){0, 400, 0}, 0xC300FF00);
+	base_vector[0][1] = 1 / sqrt(6);
+	base_vector[1][1] = 1 / sqrt(6);
+	base_vector[2][1] = 2 / sqrt(6);
 
-	put_line(&img, translate((t_coordinate){0, 0, 0}), translate((t_coordinate){500, 0, 0}), 0x00FF0000);
-	put_line(&img, translate(origin), translate((t_coordinate){0, 500, 0}), 0x0000FF00);
-	put_line(&img, origin, (t_coordinate){0, -400, 0}, 0x000000FF);
+	base_vector[0][2] = 1 / sqrt(3);
+	base_vector[1][2] = 1 / sqrt(3);
+	base_vector[2][2] = 1 / sqrt(3);
 }
 
-void	put_cube(t_data img)
+#include <stdio.h>
+t_coordinate	translate(t_coordinate	coordinate)
 {
-	// 立方体の各座標
-	t_coordinate	a = {0, 0, 0};
-	t_coordinate	b = {100, 0, 0};
-	t_coordinate	c = {0, 100, 0};
-	t_coordinate	d = {100, 100, 0};
-	t_coordinate	e = {0, 0, 100};
-	t_coordinate	f = {100, 0, 100};
-	t_coordinate	g = {0, 100, 100};
-	t_coordinate	h = {100, 100, 100};
+	t_coordinate	new;
+	double	default_vector[3][3];
 
-	put_line(&img, translate(a), translate(b), 0x00FFFFFF);
-	put_line(&img, translate(a), translate(c), 0x00FFFFFF);
-	put_line(&img, translate(d), translate(b), 0x00FFFFFF);
-	put_line(&img, translate(d), translate(c), 0x00FFFFFF);
+	set_default_base_vector(default_vector);
+	new.x = coordinate.x * default_vector[0][0];
+	new.x += coordinate.y * default_vector[0][1];
+	new.x += coordinate.z * default_vector[0][2];
+	new.x += 10;
 
-	put_line(&img, translate(e), translate(f), 0x00FFFFFF);
-	put_line(&img, translate(e), translate(g), 0x00FFFFFF);
-	put_line(&img, translate(h), translate(f), 0x00FFFFFF);
-	put_line(&img, translate(h), translate(g), 0x00FFFFFF);
+	new.y = coordinate.x * default_vector[1][0];
+	new.y += coordinate.y * default_vector[1][1];
+	new.y += coordinate.z * default_vector[1][2];
+	new.y += 10;
 
-	put_line(&img, translate(a), translate(e), 0x00FFFFFF);
-	put_line(&img, translate(b), translate(f), 0x00FFFFFF);
-	put_line(&img, translate(c), translate(g), 0x00FFFFFF);
-	put_line(&img, translate(d), translate(h), 0x00FFFFFF);
-}
+	new.z = coordinate.x * default_vector[2][0];
+	new.z += coordinate.y * default_vector[2][1];
+	new.z += coordinate.z * default_vector[2][2];
 
-typedef struct	s_mlx_info {
-	void	*mlx;
-	void	*mlx_win;
-	t_data	img;
-}				t_mlx_info;
+	// printf("default vector: (%2f, %2f, %2f)\n", default_vector[0][0], default_vector[0][1], default_vector[0][2]);
+	// printf("default vector: (%2f, %2f, %2f)\n", default_vector[1][0], default_vector[1][1], default_vector[1][2]);
+	// printf("default vector: (%2f, %2f, %2f)\n", default_vector[2][0], default_vector[2][1], default_vector[2][2]);
+	printf("(%2d, %2d, %2d) => (%2d, %2d, %2d)\n", coordinate.x, coordinate.y, coordinate.z, new.x, new.y, new.z);
 
-int	key_hook(int keycode, t_mlx_info *vars)
-{
-	(void)vars;
-	// ft_printf("keycode: %d\n", keycode);
-	if (keycode == 34) // zoom in when i is pressed.
-	{
-		ft_printf("zoom in\n");
-		zoom_flg = 1;
-		param--;
-	}
-	else if (keycode == 31) // zoom out when o is pressed.
-	{
-		ft_printf("zoom out\n");
-		zoom_flg = 1;
-		param++;
-	}
-	return (0);
+	return (new);
 }
 
 int	close_win(int keycode, t_mlx_info *vars)
@@ -164,22 +97,52 @@ int	close_win(int keycode, t_mlx_info *vars)
 
 int	loop_handler(t_mlx_info *mlx_info)
 {
-	mlx_info->img.img = mlx_new_image(mlx_info->mlx, 1920, 1080);
-	mlx_info->img.addr = mlx_get_data_addr(mlx_info->img.img, &(mlx_info->img.bits_per_pixel), &(mlx_info->img.line_length), &(mlx_info->img.endian));
-	put_axis(mlx_info->img);
-	put_cube(mlx_info->img);
+	draw_map_on_img(mlx_info->map_info, mlx_info->img);
 	mlx_put_image_to_window(mlx_info->mlx, mlx_info->mlx_win, mlx_info->img.img, 0, 0);
 	return (0);
 }
 
-int	main(void)
+void	draw_map_on_img(t_map_info map_info, t_data img)
+{
+	size_t	i;
+	size_t	j;
+
+	i = 0;
+	while (i < map_info.height)
+	{
+		j = 0;
+		while (j < map_info.width)
+		{
+			if (i < map_info.height - 1)
+			{
+				// put_line(&img, *(map_info.map[i][j]), *(map_info.map[i + 1][j]), 0x00FF0000);
+				put_line(&img, translate(*(map_info.map[i][j])), translate(*(map_info.map[i + 1][j])), 0x00FFFFFF);
+			}
+			if (j < map_info.width - 1)
+			{
+				// put_line(&img, *(map_info.map[i][j]), *(map_info.map[i][j + 1]), 0x0000FF00);
+				put_line(&img, translate(*(map_info.map[i][j])), translate(*(map_info.map[i][j + 1])), 0x00FFFFFF);
+			}
+			j++;
+		}
+		i++;
+	}
+}
+
+int	main(int argc, char *argv[])
 {
 	t_mlx_info	mlx_info;
 
-	param = 0;
+	if (argc != 2)
+		return (0);
+
+	create_map(argv[1], &(mlx_info.map_info));
+
 	mlx_info.mlx = mlx_init();
-	mlx_info.mlx_win = mlx_new_window(mlx_info.mlx, 1920, 1080, "FDF");
-	mlx_key_hook(mlx_info.mlx_win, key_hook, &mlx_info);
+	mlx_info.mlx_win = mlx_new_window(mlx_info.mlx, WIN_WIDTH, WIN_HEIGHT, "FDF");
+	mlx_info.img.img = mlx_new_image(mlx_info.mlx, WIN_WIDTH, WIN_HEIGHT);
+	mlx_info.img.addr = mlx_get_data_addr(mlx_info.img.img, &(mlx_info.img.bits_per_pixel), &(mlx_info.img.line_length), &(mlx_info.img.endian));
+
 	mlx_hook(mlx_info.mlx_win, 2, 1L<<0, close_win, &mlx_info);
 	mlx_loop_hook(mlx_info.mlx, loop_handler, &mlx_info);
 	mlx_loop(mlx_info.mlx);

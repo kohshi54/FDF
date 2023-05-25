@@ -43,7 +43,7 @@ void	free_all_node(t_map map)
 		tmp = map.head;
 		map.head = map.head->next;
 		free(tmp);
-	}	
+	}
 }
 
 void	print_all_node(t_map map)

@@ -4,8 +4,11 @@ void	put_pixel(t_data *data, int x, int y, int color)
 {
 	char	*dst;
 
-	dst = data->addr + (y * data->line_length + x * (data->bits_per_pixel / 8));
-	*(unsigned int*)dst = color;
+	if ((0 <= y && y < WIN_HEIGHT) && (0 <= x && x < WIN_WIDTH))
+	{
+		dst = data->addr + (y * data->line_length + x * (data->bits_per_pixel / 8));
+		*(unsigned int*)dst = color;
+	}
 }
 
 void	put_line_landscape(t_data *data, t_line_info info, int color)
@@ -57,15 +60,10 @@ void	put_line_portrait(t_data *data, t_line_info info, int color)
 void	put_line(t_data *data, t_coordinate start, t_coordinate end, int color)
 {
 	t_line_info	info;
-	int	x0 = start.x;
-	int	y0 = start.y;
-	int	x1 = end.x;
-	int	y1 = end.y;
-
-	x0 += X_WIDTH / 2;
-	y0 += Y_WIDTH / 2;
-	x1 += X_WIDTH / 2;
-	y1 += Y_WIDTH / 2;
+	int	x0 = start.x * 10;
+	int	y0 = start.y * 10;
+	int	x1 = end.x * 10;
+	int	y1 = end.y * 10;
 
 	info.dx = step(x0, x1);
 	info.dy = step(y0, y1);

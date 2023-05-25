@@ -1,23 +1,5 @@
-#include "LIBFT/get_next_line.h"
-#include "LIBFT/libft.h"
-#include "fcntl.h"
 #include <stdio.h>
-int	get_height(char *filename);
-int	get_width(char *filename);
-
-typedef	struct s_coordinate
-{
-	int					x;
-	int					y;
-	int					z;
-}	t_coordinate;
-
-typedef struct s_map_info
-{
-	t_coordinate	***map;
-	size_t			height;
-	size_t			width;
-}	t_map_info;
+#include "fdf.h"
 
 void	print_map(t_coordinate ***map, size_t width, size_t height)
 {
@@ -30,8 +12,8 @@ void	print_map(t_coordinate ***map, size_t width, size_t height)
 		j = 0;
 		while (j < width)
 		{
-			// printf("(%d, %d, %d)", map[i][j]->x, map[i][j]->y, map[i][j]->z);
-			printf("%d ", map[i][j]->z);
+			printf("(%2d, %2d, %2d)", map[i][j]->x, map[i][j]->y, map[i][j]->z);
+			// printf("%3d", map[i][j]->z);
 			j++;
 		}
 		printf("\n");
@@ -64,6 +46,8 @@ void	create_map(char *filename, t_map_info *map_info)
 
 	map_info->height = get_height(filename);
 	map_info->width = get_width(filename);
+	// printf("height: %zu\n", map_info->height);
+	// printf("width: %zu\n", map_info->width);
 	map_info->map = malloc(sizeof(t_coordinate *) * map_info->height);
 	fd = open(filename, O_RDONLY);
 	counter_y = 0;
@@ -78,6 +62,7 @@ void	create_map(char *filename, t_map_info *map_info)
 	}
 }
 
+/*
 int	main(int argc, char *argv[])
 {
 	t_map_info	map_info;
@@ -88,3 +73,4 @@ int	main(int argc, char *argv[])
 	print_map(map_info.map, map_info.width, map_info.height);
 	return (0);
 }
+*/

@@ -21,7 +21,7 @@ size_t	count_words(char **line)
 	int	count;
 
 	count = 0;
-	while (*line)
+	while (*line && **line != '\n')
 	{
 		count++;
 		line++;
@@ -34,6 +34,8 @@ size_t	split_and_count_number_of_words(char *line)
 	char	**line_spl;
 
 	line_spl = ft_split(line, ' ');
+	if (!line_spl)
+		exit(EXIT_FAILURE);
 	return (count_words(line_spl));
 }
 
@@ -53,7 +55,10 @@ size_t	get_width(char *filename)
 	{
 		count = split_and_count_number_of_words(line);
 		if (count != base)
+		{
+			// printf("error map");
 			exit(EXIT_FAILURE);
+		}
 	}
 	close(fd);
 	return (count);
