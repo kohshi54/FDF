@@ -1,81 +1,150 @@
 #include "fdf.h"
-#include <mlx.h>
-#include <unistd.h>
 
-typedef struct	s_data {
-	void	*img;
-	char	*addr;
-	int		bits_per_pixel;
-	int		line_length;
-	int		endian;
-}				t_data;
-
-void	my_mlx_pixel_put(t_data *data, int x, int y, int color)
+t_coordinate	rotate_x(t_coordinate	coordinate, double radian)
 {
-	char	*dst;
+	t_coordinate	new;
 
-	dst = data->addr + (y * data->line_length + x * (data->bits_per_pixel / 8));
-	*(unsigned int*)dst = color;
+	new.x = coordinate.x;
+	new.y = coordinate.y * cos(radian) - coordinate.z * sin(radian);
+	new.z = coordinate.y * sin(radian) + coordinate.z * cos(radian);
+	return (new);
 }
 
-void	draw_box(t_data *data, size_t x, size_t y, int color)
+t_coordinate	rotate_y(t_coordinate	coordinate, double radian)
 {
-	size_t	i;
-	size_t	j;
+	t_coordinate	new;
 
-	i = 10;
-	while (i < x)
-	{
-		my_mlx_pixel_put(data, i, 10, color);
-		my_mlx_pixel_put(data, 10, i, color);
-		i++;
-	}
-	j = 10;
-	while (j < y)
-	{
-		my_mlx_pixel_put(data, i, j, color);
-		my_mlx_pixel_put(data, j, i, color);
-		j++;
-	}
+	new.x = coordinate.z * sin(radian) + coordinate.x * cos(radian);
+	new.y = coordinate.y;
+	new.z = coordinate.z * cos(radian) - coordinate.x * sin(radian);
+	return (new);
 }
 
-void	draw_triagngle(t_data *data, size_t x, size_t y, int color)
+t_coordinate	rotate_z(t_coordinate	coordinate, double radian)
+{
+	t_coordinate	new;
+
+	new.x = coordinate.x * cos(radian) - coordinate.y * sin(radian);
+	new.y = coordinate.x * sin(radian) + coordinate.y * cos(radian);
+	new.z = coordinate.z;
+	return (new);
+}
+
+t_coordinate	move(t_coordinate coordinate)
+{
+	t_coordinate	new;
+
+	new.x = coordinate.x + 100;
+	new.y = coordinate.y + 100;
+	// new.z = coordinate.z + 100;
+	return (new);
+}
+
+void	set_default_base_vector(double base_vector[3][3])
+{
+	base_vector[0][0] = 1 / sqrt(2);
+	base_vector[1][0] = 1 / sqrt(2);
+	base_vector[2][0] = 0;
+
+	base_vector[0][1] = 1 / sqrt(6);
+	base_vector[1][1] = 1 / sqrt(6);
+	base_vector[2][1] = 2 / sqrt(6);
+
+	base_vector[0][2] = 1 / sqrt(3);
+	base_vector[1][2] = 1 / sqrt(3);
+	base_vector[2][2] = 1 / sqrt(3);
+}
+
+#include <stdio.h>
+t_coordinate	translate(t_coordinate	coordinate)
+{
+	t_coordinate	new;
+	double	default_vector[3][3];
+
+	set_default_base_vector(default_vector);
+	new.x = coordinate.x * default_vector[0][0];
+	new.x += coordinate.y * default_vector[0][1];
+	new.x += coordinate.z * default_vector[0][2];
+	new.x += 10;
+
+	new.y = coordinate.x * default_vector[1][0];
+	new.y += coordinate.y * default_vector[1][1];
+	new.y += coordinate.z * default_vector[1][2];
+	new.y += 10;
+
+	new.z = coordinate.x * default_vector[2][0];
+	new.z += coordinate.y * default_vector[2][1];
+	new.z += coordinate.z * default_vector[2][2];
+
+	// printf("default vector: (%2f, %2f, %2f)\n", default_vector[0][0], default_vector[0][1], default_vector[0][2]);
+	// printf("default vector: (%2f, %2f, %2f)\n", default_vector[1][0], default_vector[1][1], default_vector[1][2]);
+	// printf("default vector: (%2f, %2f, %2f)\n", default_vector[2][0], default_vector[2][1], default_vector[2][2]);
+	printf("(%2d, %2d, %2d) => (%2d, %2d, %2d)\n", coordinate.x, coordinate.y, coordinate.z, new.x, new.y, new.z);
+
+	return (new);
+}
+
+int	close_win(int keycode, t_mlx_info *vars)
+{
+	// close when esc key is pressed.
+	if (keycode == 53)
+	{
+		mlx_destroy_window(vars->mlx, vars->mlx_win);
+		exit(EXIT_SUCCESS);
+	}
+	return (0);
+}
+
+int	loop_handler(t_mlx_info *mlx_info)
+{
+	draw_map_on_img(mlx_info->map_info, mlx_info->img);
+	mlx_put_image_to_window(mlx_info->mlx, mlx_info->mlx_win, mlx_info->img.img, 0, 0);
+	return (0);
+}
+
+void	draw_map_on_img(t_map_info map_info, t_data img)
 {
 	size_t	i;
 	size_t	j;
 
 	i = 0;
-	y++;
-	x++;
-	while (i < 100)
+	while (i < map_info.height)
 	{
-		my_mlx_pixel_put(data, 200 + i, 10 + i, color);
-		my_mlx_pixel_put(data, 200 - i, 10 + i, color);
+		j = 0;
+		while (j < map_info.width)
+		{
+			if (i < map_info.height - 1)
+			{
+				// put_line(&img, *(map_info.map[i][j]), *(map_info.map[i + 1][j]), 0x00FF0000);
+				put_line(&img, translate(*(map_info.map[i][j])), translate(*(map_info.map[i + 1][j])), 0x00FFFFFF);
+			}
+			if (j < map_info.width - 1)
+			{
+				// put_line(&img, *(map_info.map[i][j]), *(map_info.map[i][j + 1]), 0x0000FF00);
+				put_line(&img, translate(*(map_info.map[i][j])), translate(*(map_info.map[i][j + 1])), 0x00FFFFFF);
+			}
+			j++;
+		}
 		i++;
-	}
-	j = 200 - i;
-	while (j < 200 + i)
-	{
-		my_mlx_pixel_put(data, j, 10 + i, color);
-		j++;
 	}
 }
 
-int	main(void)
+int	main(int argc, char *argv[])
 {
-	void	*mlx;
-	void	*mlx_win;
-	t_data	img;
+	t_mlx_info	mlx_info;
 
-	mlx = mlx_init();
-	mlx_win = mlx_new_window(mlx, 1920, 1080, "Hello world!");
+	if (argc != 2)
+		return (0);
 
-	img.img = mlx_new_image(mlx, 1920, 1080);
-	img.addr = mlx_get_data_addr(img.img, &img.bits_per_pixel, &img.line_length, &img.endian);
+	create_map(argv[1], &(mlx_info.map_info));
 
-	draw_box(&img, 100, 100, 0x00FF0000);
-	draw_triagngle(&img, 100, 100, 0x00FF0000);
-	mlx_put_image_to_window(mlx, mlx_win, img.img, 0, 0);
+	mlx_info.mlx = mlx_init();
+	mlx_info.mlx_win = mlx_new_window(mlx_info.mlx, WIN_WIDTH, WIN_HEIGHT, "FDF");
+	mlx_info.img.img = mlx_new_image(mlx_info.mlx, WIN_WIDTH, WIN_HEIGHT);
+	mlx_info.img.addr = mlx_get_data_addr(mlx_info.img.img, &(mlx_info.img.bits_per_pixel), &(mlx_info.img.line_length), &(mlx_info.img.endian));
 
-	mlx_loop(mlx);
+	mlx_hook(mlx_info.mlx_win, 2, 1L<<0, close_win, &mlx_info);
+	mlx_loop_hook(mlx_info.mlx, loop_handler, &mlx_info);
+	mlx_loop(mlx_info.mlx);
+	return (0);
 }
