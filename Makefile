@@ -8,7 +8,8 @@ OBJS = $(SRCS:%.c=%.o)
 LIBFT = LIBFT/libft.a
 LIBFT_DIR = LIBFT/
 
-MLX = libmlx.dylib
+# MLX = libmlx.dylib
+MLX = libmlx.a
 MLX_DIR = minilibx/
 
 INCLUDES = fdf.h
