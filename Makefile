@@ -9,7 +9,7 @@ LIBFT = LIBFT/libft.a
 LIBFT_DIR = LIBFT/
 
 # MLX = libmlx.dylib
-MLX = libmlx.a
+MLX = minilibx/libmlx.a
 MLX_DIR = minilibx/
 
 INCLUDES = fdf.h
@@ -18,14 +18,14 @@ LIBRARY = -L./$(LIBFT_DIR) -lft -L./$(MLX_DIR) -lmlx -framework OpenGL -framewor
 
 all : $(NAME)
 
-$(NAME) : $(OBJS) $(LIBFT) $(minilibx)
+$(NAME) : $(OBJS) $(LIBFT) $(MLX)
 	$(CC) $(CFLAGS) $(OBJS) $(LIBRARY) -o $(NAME)
 
 $(LIBFT) : $(LIBFT_DIR)
 	$(MAKE) -C $(LIBFT_DIR)
 
-$(minilibx) : $(minilibx_dir)
-	$(MAKE) -C $(minilibx_dir)
+$(MLX) : $(MLX_DIR)
+	$(MAKE) -C $(MLX_DIR)
 
 clean : 
 	rm -f $(OBJS)
