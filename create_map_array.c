@@ -30,9 +30,9 @@ void	fill_line(t_coordinate ***map, char **line_spl, size_t counter_y, size_t wi
 	while (counter_x < width)
 	{
 		map[counter_y][counter_x] = malloc(sizeof(t_coordinate));
-		map[counter_y][counter_x]->x = counter_x * 20;
-		map[counter_y][counter_x]->y = counter_y * 20;
-		map[counter_y][counter_x]->z = ft_atoi(line_spl[counter_x]) * 20;
+		map[counter_y][counter_x]->x = counter_x;
+		map[counter_y][counter_x]->y = counter_y;
+		map[counter_y][counter_x]->z = ft_atoi(line_spl[counter_x]);
 		counter_x++;
 	}
 }
