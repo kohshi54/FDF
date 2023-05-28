@@ -36,7 +36,17 @@ t_coordinate	move(t_coordinate coordinate)
 
 	new.x = coordinate.x + 200;
 	new.y = coordinate.y + 200;
-	// new.z = coordinate.z + 100;
+	new.z = coordinate.z + 100;
+	return (new);
+}
+
+t_coordinate	zoom(t_coordinate coordinate)
+{
+	t_coordinate	new;
+
+	new.x = coordinate.x * 20;
+	new.y = coordinate.y * 20;
+	new.z = coordinate.z * 20;
 	return (new);
 }
 
@@ -45,8 +55,9 @@ t_coordinate	translate(t_coordinate	coordinate)
 	t_coordinate	new;
 	double			radian;
 
+	new = zoom(coordinate);
 	radian = atan(1);
-	new = rotate_z(coordinate, radian);
+	new = rotate_z(new, radian);
 	radian = atan2(M_SQRT2, 1);
 	new = rotate_x(new, radian);
 	new = move(new);
@@ -83,27 +94,10 @@ void	draw_map_on_img(t_map_info map_info, t_data img)
 		j = 0;
 		while (j < map_info.width)
 		{
-			// put_pixel(&img, map_info.map[i][j]->x + 100, map_info.map[i][j]->y + 100, 0x00FFFFFF);
-			// put_pixel(&img, translate(*(map_info.map[i][j])).x + 200, translate(*(map_info.map[i][j])).y + 200, 0x00FFFFFF);
 			if (i < map_info.height - 1)
-			{
-				// put_pixel(&img, translate(*(map_info.map[i][j])).x + 100, translate(*(map_info.map[i][j])).y + 100, 0x00FF0000);
-				// put_line(&img, *(map_info.map[i][j]), *(map_info.map[i + 1][j]), 0x00FF0000);
-				// put_pixel(&img, map_info.map[i][j]->x*10 + 100, map_info.map[i][j]->y*10 + 100, 0x00FFFFFF);
-				// put_pixel(&img, translate(*(map_info.map[i][j])).x * 10 + 100, translate(*(map_info.map[i][j])).y * 10 + 100, 0x00FF0000);
-
 				put_line(&img, translate(*(map_info.map[i][j])), translate(*(map_info.map[i + 1][j])), 0x00FFFFFF);
-			}
 			if (j < map_info.width - 1)
-			{
-				// put_pixel(&img, translate(*(map_info.map[i][j])).x + 100, translate(*(map_info.map[i][j])).y + 100, 0x00FF0000);
-				// put_pixel(&img, map_info.map[i][j]->x*10 + 100, map_info.map[i][j]->y*10 + 100, 0x00FFFFFF);
-				// put_pixel(&img, map_info.map[i][j]->x*10 + 100, map_info.map[i][j]->y*10 + 100, 0x00FFFFFF);
-				// put_pixel(&img, translate(*(map_info.map[i][j])).x * 10 + 100, translate(*(map_info.map[i][j])).y * 10 + 100, 0x00FF0000);
-				// put_line(&img, *(map_info.map[i][j]), *(map_info.map[i][j + 1]), 0x0000FF00);
-
 				put_line(&img, translate(*(map_info.map[i][j])), translate(*(map_info.map[i][j + 1])), 0x00FFFFFF);
-			}
 			j++;
 		}
 		i++;
