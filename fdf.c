@@ -80,19 +80,32 @@ t_coordinate	move_map_to_win_center(t_coordinate coordinate)
 	new.y = coordinate.y + WIN_HEIGHT/2;
 	return (new);
 }
-
-t_coordinate	scale_up(t_coordinate coordinate)
+#include <stdio.h>
+t_coordinate	scale_up(t_coordinate coordinate, t_map_info map_info)
 {
 	t_coordinate	new;
+	int				up;
+	size_t			max;
 
-	new.x = coordinate.x * 20;
-	new.y = coordinate.y * 20;
-	new.z = coordinate.z * 20;
+	up = 1;
+	if (map_info.width < map_info.height && map_info.depth < map_info.height)
+		max = map_info.height;
+	if (map_info.height < map_info.depth && map_info.width < map_info.depth)
+		max = map_info.depth;
+	if (map_info.depth < map_info.width && map_info.height < map_info.width)
+		max = map_info.width;
+	while (max * up < WIN_HEIGHT * 0.5)
+		up++;
+	// printf("up: %d\n", up);
+	new.x = coordinate.x * up;
+	new.y = coordinate.y * up;
+	new.z = coordinate.z * up;
 	return (new);
 }
 
 void	set_default_base_vector(double base_vector[3][3])
 {
+	// /*
 	base_vector[0][0] = 1 / sqrt(2);
 	base_vector[1][0] = -1 / sqrt(2);
 	base_vector[2][0] = 0;
@@ -104,6 +117,7 @@ void	set_default_base_vector(double base_vector[3][3])
 	base_vector[0][2] = 1 / sqrt(3);
 	base_vector[1][2] = 1 / sqrt(3);
 	base_vector[2][2] = 1 / sqrt(3);	
+	// */
 /*
 	base_vector[0][0] = 1;
 	base_vector[1][0] = 0;
@@ -159,7 +173,7 @@ t_coordinate	translate(t_coordinate P, t_map_info map_info)
 	get_and_set_inverse_matrix(base);
 
 	P = move_map_center_to_origin(P, map_info);
-	P = scale_up(P);
+	P = scale_up(P, map_info);
 
 	new.x = P.x * base[0][0] + P.y * base[0][1] + P.z * base[0][2];
 	new.y = P.x * base[1][0] + P.y * base[1][1] + P.z * base[1][2];
@@ -207,9 +221,9 @@ void	draw_map_on_img(t_map_info map_info, t_data img)
 		while (j < map_info.width)
 		{
 			if (i < map_info.height - 1)
-				put_line(&img, translate(*(map_info.map[i][j]), map_info), translate(*(map_info.map[i + 1][j]), map_info), 0x00FFFFFF);
+				put_line(&img, translate(*(map_info.map[i][j]), map_info), translate(*(map_info.map[i + 1][j]), map_info), map_info.map[i][j]->color);
 			if (j < map_info.width - 1)
-				put_line(&img, translate(*(map_info.map[i][j]), map_info), translate(*(map_info.map[i][j + 1]), map_info), 0x00FFFFFF);
+				put_line(&img, translate(*(map_info.map[i][j]), map_info), translate(*(map_info.map[i][j + 1]), map_info), map_info.map[i][j]->color);
 			j++;
 		}
 		i++;
@@ -223,6 +237,7 @@ int	main(int argc, char *argv[])
 	if (argc != 2)
 		return (0);
 	create_map(argv[1], &(mlx_info.map_info));
+	// print_map(mlx_info.map_info.map, mlx_info.map_info.width, mlx_info.map_info.height);
 
 	mlx_info.mlx = mlx_init();
 	mlx_info.mlx_win = mlx_new_window(mlx_info.mlx, WIN_WIDTH, WIN_HEIGHT, "FDF");
