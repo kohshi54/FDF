@@ -72,20 +72,21 @@ void	rotate_z(double base[3][3], double radian)
 	base[2][2] = tmp[2][2];
 }
 
-t_coordinate	scale_up(t_coordinate coordinate, t_map_info map_info)
+t_coordinate	set_scale(t_coordinate coordinate, t_map_info map_info)
 {
 	t_coordinate	new;
 	int				up;
 	size_t			max;
 
 	up = 1;
-	if (map_info.width < map_info.height && map_info.depth < map_info.height)
+	max = 2;
+	if (map_info.width <= map_info.height && map_info.depth <= map_info.height)
 		max = map_info.height;
-	if (map_info.height < map_info.depth && map_info.width < map_info.depth)
+	else if (map_info.height <= map_info.depth && map_info.width <= map_info.depth)
 		max = map_info.depth;
-	if (map_info.depth < map_info.width && map_info.height < map_info.width)
+	else if (map_info.depth <= map_info.width && map_info.height <= map_info.width)
 		max = map_info.width;
-	while (max * up < WIN_HEIGHT * 0.5)
+	while (max * up < WIN_HEIGHT * 0.3)
 		up++;
 	new.x = coordinate.x * up;
 	new.y = coordinate.y * up;
@@ -93,20 +94,20 @@ t_coordinate	scale_up(t_coordinate coordinate, t_map_info map_info)
 	return (new);
 }
 
-void	set_default_base_vector(double base_vector[3][3])
+void	set_base(double base[3][3])
 {
 	// /*
-	base_vector[0][0] = 1 / sqrt(2);
-	base_vector[1][0] = -1 / sqrt(2);
-	base_vector[2][0] = 0;
+	base[0][0] = 1 / sqrt(2);
+	base[1][0] = -1 / sqrt(2);
+	base[2][0] = 0;
 
-	base_vector[0][1] = 1 / sqrt(6);
-	base_vector[1][1] = 1 / sqrt(6);
-	base_vector[2][1] = -2 / sqrt(6);
+	base[0][1] = 1 / sqrt(6);
+	base[1][1] = 1 / sqrt(6);
+	base[2][1] = -2 / sqrt(6);
 
-	base_vector[0][2] = 1 / sqrt(3);
-	base_vector[1][2] = 1 / sqrt(3);
-	base_vector[2][2] = 1 / sqrt(3);	
+	base[0][2] = 1 / sqrt(3);
+	base[1][2] = 1 / sqrt(3);
+	base[2][2] = 1 / sqrt(3);	
 	// */
 /*
 	base_vector[0][0] = 1;
@@ -123,7 +124,7 @@ void	set_default_base_vector(double base_vector[3][3])
 */
 }
 
-void	get_and_set_inverse_matrix(double base_vector[3][3])
+void	set_inverse_matrix(double base[3][3])
 {
 	size_t	x;
 	size_t	y;
@@ -135,16 +136,23 @@ void	get_and_set_inverse_matrix(double base_vector[3][3])
 		x = y + 1;
 		while (x < 3)
 		{
-			tmp = base_vector[y][x];
-			base_vector[y][x] = base_vector[x][y];
-			base_vector[x][y] = tmp;
+			tmp = base[y][x];
+			base[y][x] = base[x][y];
+			base[x][y] = tmp;
 			x++;
 		}
 		y++;
 	}
 }
 
-t_coordinate	move_map_to_win_center(t_coordinate coordinate)
+t_coordinate	move_center_of_map_to_origin(t_coordinate vertex, t_map_info map_info)
+{
+	vertex.x -= map_info.width / 2;
+	vertex.y -= map_info.height / 2;
+	return (vertex);
+}
+
+t_coordinate	move_map_to_center_of_window(t_coordinate coordinate)
 {
 	t_coordinate	new;
 
@@ -153,32 +161,25 @@ t_coordinate	move_map_to_win_center(t_coordinate coordinate)
 	return (new);
 }
 
-t_coordinate	move_map_center_to_origin(t_coordinate P, t_map_info map_info)
-{
-	P.x -= map_info.width / 2;
-	P.y -= map_info.height / 2;
-	return (P);
-}
-
-t_coordinate	translate(t_coordinate P, t_map_info map_info)
+t_coordinate	translate(t_coordinate vertex, t_map_info map_info)
 {
 	t_coordinate	new;
 	double			base[3][3];
 
-	set_default_base_vector(base);
+	set_base(base);
 	// rotate_x(base, (45 * M_PI / 180));
 	// rotate_y(base, (45 * M_PI / 180));
 	// rotate_z(base, (45 * M_PI / 180));
-	get_and_set_inverse_matrix(base);
+	set_inverse_matrix(base);
 
-	P = move_map_center_to_origin(P, map_info);
-	P = scale_up(P, map_info);
+	vertex = move_center_of_map_to_origin(vertex, map_info);
+	vertex = set_scale(vertex, map_info);
 
-	new.x = P.x * base[0][0] + P.y * base[0][1] + P.z * base[0][2];
-	new.y = P.x * base[1][0] + P.y * base[1][1] + P.z * base[1][2];
-	new.z = P.x * base[2][0] + P.y * base[2][1] + P.z * base[2][2];
+	new.x = vertex.x * base[0][0] + vertex.y * base[0][1] + vertex.z * base[0][2];
+	new.y = vertex.x * base[1][0] + vertex.y * base[1][1] + vertex.z * base[1][2];
+	new.z = vertex.x * base[2][0] + vertex.y * base[2][1] + vertex.z * base[2][2];
 
-	new = move_map_to_win_center(new);
+	new = move_map_to_center_of_window(new);
 	return (new);
 }
 
@@ -239,7 +240,7 @@ int	main(int argc, char *argv[])
 	// print_map(mlx_info.map_info.map, mlx_info.map_info.width, mlx_info.map_info.height);
 
 	mlx_info.mlx = mlx_init();
-	mlx_info.mlx_win = mlx_new_window(mlx_info.mlx, WIN_WIDTH, WIN_HEIGHT, "FDF");
+	mlx_info.mlx_win = mlx_new_window(mlx_info.mlx, WIN_WIDTH, WIN_HEIGHT, argv[1]);
 	mlx_info.img.img = mlx_new_image(mlx_info.mlx, WIN_WIDTH, WIN_HEIGHT);
 	mlx_info.img.addr = mlx_get_data_addr(mlx_info.img.img, &(mlx_info.img.bits_per_pixel), &(mlx_info.img.line_length), &(mlx_info.img.endian));
 
