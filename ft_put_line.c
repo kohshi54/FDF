@@ -60,10 +60,10 @@ void	put_line_portrait(t_data *data, t_line_info info, int color)
 void	put_line(t_data *data, t_coordinate start, t_coordinate end, int color)
 {
 	t_line_info	info;
-	int	x0 = start.x * 10;
-	int	y0 = start.y * 10;
-	int	x1 = end.x * 10;
-	int	y1 = end.y * 10;
+	int	x0 = start.x;
+	int	y0 = start.y;
+	int	x1 = end.x;
+	int	y1 = end.y;
 
 	info.dx = step(x0, x1);
 	info.dy = step(y0, y1);

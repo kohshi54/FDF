@@ -34,53 +34,81 @@ t_coordinate	move(t_coordinate coordinate)
 {
 	t_coordinate	new;
 
-	new.x = coordinate.x + 100;
-	new.y = coordinate.y + 100;
-	// new.z = coordinate.z + 100;
+	new.x = coordinate.x + 200;
+	new.y = coordinate.y + 200;
+	new.z = coordinate.z + 200;
+	return (new);
+}
+
+t_coordinate	scale_up(t_coordinate coordinate)
+{
+	t_coordinate	new;
+
+	new.x = coordinate.x * 20;
+	new.y = coordinate.y * 20;
+	new.z = coordinate.z * 20;
 	return (new);
 }
 
 void	set_default_base_vector(double base_vector[3][3])
 {
-	base_vector[0][0] = 1 / sqrt(2);
-	base_vector[1][0] = 1 / sqrt(2);
+	base_vector[0][0] = 1/sqrt(2);
+	base_vector[1][0] = -1/sqrt(2);
 	base_vector[2][0] = 0;
 
-	base_vector[0][1] = 1 / sqrt(6);
-	base_vector[1][1] = 1 / sqrt(6);
-	base_vector[2][1] = 2 / sqrt(6);
+	base_vector[0][1] = 1/sqrt(6);
+	base_vector[1][1] = 1/sqrt(6);
+	base_vector[2][1] = -2/sqrt(6);
 
 	base_vector[0][2] = 1 / sqrt(3);
 	base_vector[1][2] = 1 / sqrt(3);
 	base_vector[2][2] = 1 / sqrt(3);
 }
 
-#include <stdio.h>
-t_coordinate	translate(t_coordinate	coordinate)
+void	get_and_set_inverse_matrix(double base_vector[3][3])
+{
+	double	tmp_matrix[3][3];
+
+	tmp_matrix[0][0] = base_vector[0][0];
+	tmp_matrix[0][1] = base_vector[1][0];
+	tmp_matrix[0][2] = base_vector[2][0];
+
+	tmp_matrix[1][0] = base_vector[0][1];
+	tmp_matrix[1][1] = base_vector[1][1];
+	tmp_matrix[1][2] = base_vector[2][1];
+
+	tmp_matrix[2][0] = base_vector[0][2];
+	tmp_matrix[2][1] = base_vector[1][2];
+	tmp_matrix[2][2] = base_vector[2][2];
+
+	size_t	i;
+	size_t	j;
+	j = 0;
+	while (j < 3)
+	{
+		i = 0;
+		while (i < 3)
+		{
+			base_vector[j][i] = tmp_matrix[j][i];
+			i++;
+		}
+		j++;
+	}
+}
+
+t_coordinate	translate(t_coordinate	P)
 {
 	t_coordinate	new;
-	double	default_vector[3][3];
+	double	base_vector[3][3];
 
-	set_default_base_vector(default_vector);
-	new.x = coordinate.x * default_vector[0][0];
-	new.x += coordinate.y * default_vector[0][1];
-	new.x += coordinate.z * default_vector[0][2];
-	new.x += 10;
+	set_default_base_vector(base_vector);
+	get_and_set_inverse_matrix(base_vector);
+	P = scale_up(P);
+	new.x = P.x * base_vector[0][0] + P.y * base_vector[0][1] + P.z * base_vector[0][2];
+	new.y = P.x * base_vector[1][0] + P.y * base_vector[1][1] + P.z * base_vector[1][2];
+	new.z = P.x * base_vector[2][0] + P.y * base_vector[2][1] + P.z * base_vector[2][2];
 
-	new.y = coordinate.x * default_vector[1][0];
-	new.y += coordinate.y * default_vector[1][1];
-	new.y += coordinate.z * default_vector[1][2];
-	new.y += 10;
-
-	new.z = coordinate.x * default_vector[2][0];
-	new.z += coordinate.y * default_vector[2][1];
-	new.z += coordinate.z * default_vector[2][2];
-
-	// printf("default vector: (%2f, %2f, %2f)\n", default_vector[0][0], default_vector[0][1], default_vector[0][2]);
-	// printf("default vector: (%2f, %2f, %2f)\n", default_vector[1][0], default_vector[1][1], default_vector[1][2]);
-	// printf("default vector: (%2f, %2f, %2f)\n", default_vector[2][0], default_vector[2][1], default_vector[2][2]);
-	printf("(%2d, %2d, %2d) => (%2d, %2d, %2d)\n", coordinate.x, coordinate.y, coordinate.z, new.x, new.y, new.z);
-
+	new = move(new);
 	return (new);
 }
 
@@ -135,7 +163,6 @@ int	main(int argc, char *argv[])
 
 	if (argc != 2)
 		return (0);
-
 	create_map(argv[1], &(mlx_info.map_info));
 
 	mlx_info.mlx = mlx_init();
