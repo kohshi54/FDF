@@ -33,6 +33,7 @@ typedef	struct s_coordinate
 	int	x;
 	int	y;
 	int	z;
+	int	color;
 }	t_coordinate;
 
 typedef struct s_map_info
@@ -40,6 +41,7 @@ typedef struct s_map_info
 	t_coordinate	***map;
 	size_t			height;
 	size_t			width;
+	size_t			depth;
 }	t_map_info;
 
 typedef struct	s_mlx_info {
