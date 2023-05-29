@@ -72,15 +72,6 @@ void	rotate_z(double base[3][3], double radian)
 	base[2][2] = tmp[2][2];
 }
 
-t_coordinate	move_map_to_win_center(t_coordinate coordinate)
-{
-	t_coordinate	new;
-
-	new.x = coordinate.x + WIN_WIDTH/2;
-	new.y = coordinate.y + WIN_HEIGHT/2;
-	return (new);
-}
-#include <stdio.h>
 t_coordinate	scale_up(t_coordinate coordinate, t_map_info map_info)
 {
 	t_coordinate	new;
@@ -96,7 +87,6 @@ t_coordinate	scale_up(t_coordinate coordinate, t_map_info map_info)
 		max = map_info.width;
 	while (max * up < WIN_HEIGHT * 0.5)
 		up++;
-	// printf("up: %d\n", up);
 	new.x = coordinate.x * up;
 	new.y = coordinate.y * up;
 	new.z = coordinate.z * up;
@@ -152,6 +142,15 @@ void	get_and_set_inverse_matrix(double base_vector[3][3])
 		}
 		y++;
 	}
+}
+
+t_coordinate	move_map_to_win_center(t_coordinate coordinate)
+{
+	t_coordinate	new;
+
+	new.x = coordinate.x + WIN_WIDTH / 2;
+	new.y = coordinate.y + WIN_HEIGHT / 2;
+	return (new);
 }
 
 t_coordinate	move_map_center_to_origin(t_coordinate P, t_map_info map_info)
