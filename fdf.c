@@ -30,13 +30,13 @@ t_coordinate	rotate_z(t_coordinate	coordinate, double radian)
 	return (new);
 }
 
-t_coordinate	move(t_coordinate coordinate)
+t_coordinate	move_on_xy(t_coordinate coordinate)
 {
 	t_coordinate	new;
 
 	new.x = coordinate.x + 200;
 	new.y = coordinate.y + 200;
-	new.z = coordinate.z + 200;
+	// new.z = coordinate.z + 200;
 	return (new);
 }
 
@@ -52,13 +52,13 @@ t_coordinate	scale_up(t_coordinate coordinate)
 
 void	set_default_base_vector(double base_vector[3][3])
 {
-	base_vector[0][0] = 1/sqrt(2);
-	base_vector[1][0] = -1/sqrt(2);
+	base_vector[0][0] = 1 / sqrt(2);
+	base_vector[1][0] = -1 / sqrt(2);
 	base_vector[2][0] = 0;
 
-	base_vector[0][1] = 1/sqrt(6);
-	base_vector[1][1] = 1/sqrt(6);
-	base_vector[2][1] = -2/sqrt(6);
+	base_vector[0][1] = 1 / sqrt(6);
+	base_vector[1][1] = 1 / sqrt(6);
+	base_vector[2][1] = -2 / sqrt(6);
 
 	base_vector[0][2] = 1 / sqrt(3);
 	base_vector[1][2] = 1 / sqrt(3);
@@ -67,48 +67,39 @@ void	set_default_base_vector(double base_vector[3][3])
 
 void	get_and_set_inverse_matrix(double base_vector[3][3])
 {
-	double	tmp_matrix[3][3];
+	size_t	x;
+	size_t	y;
+	double	tmp;
 
-	tmp_matrix[0][0] = base_vector[0][0];
-	tmp_matrix[0][1] = base_vector[1][0];
-	tmp_matrix[0][2] = base_vector[2][0];
-
-	tmp_matrix[1][0] = base_vector[0][1];
-	tmp_matrix[1][1] = base_vector[1][1];
-	tmp_matrix[1][2] = base_vector[2][1];
-
-	tmp_matrix[2][0] = base_vector[0][2];
-	tmp_matrix[2][1] = base_vector[1][2];
-	tmp_matrix[2][2] = base_vector[2][2];
-
-	size_t	i;
-	size_t	j;
-	j = 0;
-	while (j < 3)
+	y = 0;
+	while (y < 3)
 	{
-		i = 0;
-		while (i < 3)
+		x = y + 1;
+		while (x < 3)
 		{
-			base_vector[j][i] = tmp_matrix[j][i];
-			i++;
+			tmp = base_vector[y][x];
+			base_vector[y][x] = base_vector[x][y];
+			base_vector[x][y] = tmp;
+			x++;
 		}
-		j++;
+		y++;
 	}
 }
 
-t_coordinate	translate(t_coordinate	P)
+t_coordinate	translate(t_coordinate P)
 {
 	t_coordinate	new;
-	double	base_vector[3][3];
+	double			base[3][3];
 
-	set_default_base_vector(base_vector);
-	get_and_set_inverse_matrix(base_vector);
+	set_default_base_vector(base);
+	get_and_set_inverse_matrix(base);
 	P = scale_up(P);
-	new.x = P.x * base_vector[0][0] + P.y * base_vector[0][1] + P.z * base_vector[0][2];
-	new.y = P.x * base_vector[1][0] + P.y * base_vector[1][1] + P.z * base_vector[1][2];
-	new.z = P.x * base_vector[2][0] + P.y * base_vector[2][1] + P.z * base_vector[2][2];
 
-	new = move(new);
+	new.x = P.x * base[0][0] + P.y * base[0][1] + P.z * base[0][2];
+	new.y = P.x * base[1][0] + P.y * base[1][1] + P.z * base[1][2];
+	new.z = P.x * base[2][0] + P.y * base[2][1] + P.z * base[2][2];
+
+	new = move_on_xy(new);
 	return (new);
 }
 
