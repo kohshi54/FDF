@@ -18,18 +18,6 @@ void	copy_matrix(double dst[3][3], double src[3][3])
 	}
 }
 
-/*
-t_coordinate	rotate_x(t_coordinate	coordinate, double radian)
-{
-	t_coordinate	new;
-
-	new.x = coordinate.x;
-	new.y = coordinate.y * cos(radian) - coordinate.z * sin(radian);
-	new.z = coordinate.y * sin(radian) + coordinate.z * cos(radian);
-	return (new);
-}
-*/
-
 void	rotate_x(double base[3][3], double radian)
 {
 	double	tmp[3][3];
@@ -84,13 +72,12 @@ void	rotate_z(double base[3][3], double radian)
 	base[2][2] = tmp[2][2];
 }
 
-t_coordinate	move_on_xy(t_coordinate coordinate)
+t_coordinate	move_map_to_win_center(t_coordinate coordinate)
 {
 	t_coordinate	new;
 
 	new.x = coordinate.x + WIN_WIDTH/2;
 	new.y = coordinate.y + WIN_HEIGHT/2;
-	// new.z = coordinate.z + 200;
 	return (new);
 }
 
@@ -106,7 +93,6 @@ t_coordinate	scale_up(t_coordinate coordinate)
 
 void	set_default_base_vector(double base_vector[3][3])
 {
-	// /*
 	base_vector[0][0] = 1 / sqrt(2);
 	base_vector[1][0] = -1 / sqrt(2);
 	base_vector[2][0] = 0;
@@ -117,8 +103,7 @@ void	set_default_base_vector(double base_vector[3][3])
 
 	base_vector[0][2] = 1 / sqrt(3);
 	base_vector[1][2] = 1 / sqrt(3);
-	base_vector[2][2] = 1 / sqrt(3);
-	// */
+	base_vector[2][2] = 1 / sqrt(3);	
 /*
 	base_vector[0][0] = 1;
 	base_vector[1][0] = 0;
@@ -154,7 +139,14 @@ void	get_and_set_inverse_matrix(double base_vector[3][3])
 		y++;
 	}
 }
-#include <stdio.h>	
+
+t_coordinate	move_map_center_to_origin(t_coordinate P, t_map_info map_info)
+{
+	P.x -= map_info.width / 2;
+	P.y -= map_info.height / 2;
+	return (P);
+}
+
 t_coordinate	translate(t_coordinate P, t_map_info map_info)
 {
 	t_coordinate	new;
@@ -166,14 +158,14 @@ t_coordinate	translate(t_coordinate P, t_map_info map_info)
 	// rotate_z(base, (45 * M_PI / 180));
 	get_and_set_inverse_matrix(base);
 
-	P.x -= map_info.width/2;
-	P.y -= map_info.height/2;
+	P = move_map_center_to_origin(P, map_info);
 	P = scale_up(P);
+
 	new.x = P.x * base[0][0] + P.y * base[0][1] + P.z * base[0][2];
 	new.y = P.x * base[1][0] + P.y * base[1][1] + P.z * base[1][2];
 	new.z = P.x * base[2][0] + P.y * base[2][1] + P.z * base[2][2];
 
-	new = move_on_xy(new);
+	new = move_map_to_win_center(new);
 	return (new);
 }
 
