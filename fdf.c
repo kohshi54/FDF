@@ -71,7 +71,7 @@ void	rotate_z(double base[3][3], double radian)
 	base[1][2] = tmp[0][2] * sin(radian) + tmp[1][2] * cos(radian);
 	base[2][2] = tmp[2][2];
 }
-
+#include <stdio.h>
 t_coordinate	set_scale(t_coordinate coordinate, t_map_info map_info)
 {
 	t_coordinate	new;
@@ -86,8 +86,9 @@ t_coordinate	set_scale(t_coordinate coordinate, t_map_info map_info)
 		max = map_info.depth;
 	else if (map_info.depth <= map_info.width && map_info.height <= map_info.width)
 		max = map_info.width;
-	while (max * up < WIN_HEIGHT * 0.3)
-		up++;
+	up = (WIN_HEIGHT * 0.3) / max;
+	if (up == 0)
+		up = 2;
 	new.x = coordinate.x * up;
 	new.y = coordinate.y * up;
 	new.z = coordinate.z * up;
