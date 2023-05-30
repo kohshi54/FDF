@@ -64,18 +64,7 @@ void	create_map(char *filename, t_map_info *map_info);
 void	print_map(t_coordinate ***map, size_t width, size_t height);
 void	draw_map_on_img(t_map_info map_info, t_data img);
 
-# ifndef step
-#  define step(a, b) ((a < b) ? 1 : -1);
-# endif
-
 void	put_line(t_data *data, t_coordinate start, t_coordinate end, int color);
-# ifndef X_WIDTH
-#  define X_WIDTH 1920
-# endif
-
-# ifndef Y_WIDTH
-#  define Y_WIDTH 1080
-# endif
 
 # define WIN_WIDTH 1024
 # define WIN_HEIGHT 1024

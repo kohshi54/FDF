@@ -57,6 +57,13 @@ void	put_line_portrait(t_data *data, t_line_info info, int color)
 	}
 }
 
+int	get_step(int a, int b)
+{
+	if (a < b)
+		return (1);
+	return (-1);
+}
+
 void	put_line(t_data *data, t_coordinate start, t_coordinate end, int color)
 {
 	t_line_info	info;
@@ -65,8 +72,8 @@ void	put_line(t_data *data, t_coordinate start, t_coordinate end, int color)
 	int	x1 = end.x;
 	int	y1 = end.y;
 
-	info.dx = step(x0, x1);
-	info.dy = step(y0, y1);
+	info.dx = get_step(x0, x1);
+	info.dy = get_step(y0, y1);
 
 	info.x = x0;
 	info.y = y0;

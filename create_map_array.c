@@ -1,7 +1,5 @@
 #include "fdf.h"
 
-/*
-#include <stdio.h>
 void	print_map(t_coordinate ***map, size_t width, size_t height)
 {
 	size_t	i;
@@ -13,16 +11,13 @@ void	print_map(t_coordinate ***map, size_t width, size_t height)
 		j = 0;
 		while (j < width)
 		{
-			// printf("(%2d, %2d, %2d, 0x%x)", map[i][j]->x, map[i][j]->y, map[i][j]->z, map[i][j]->color);
-			printf("%d,0x%x\n", map[i][j]->z, map[i][j]->color);
-			// printf("%3d", map[i][j]->z);
+			ft_printf("%d ", map[i][j]->z);
 			j++;
 		}
-		printf("\n");
+		ft_printf("\n");
 		i++;
 	}
 }
-*/
 
 int		get_digit(char *line)
 {
@@ -109,16 +104,3 @@ void	create_map(char *filename, t_map_info *map_info)
 		counter_y++;
 	}
 }
-
-/*
-int	main(int argc, char *argv[])
-{
-	t_map_info	map_info;
-
-	if (argc != 2)
-		return (0);
-	create_map(argv[1], &map_info);
-	print_map(map_info.map, map_info.width, map_info.height);
-	return (0);
-}
-*/
