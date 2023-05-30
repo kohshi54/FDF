@@ -172,7 +172,7 @@ t_coordinate	translate(t_coordinate P, t_map_info map_info, double base[3][3])
 #include <stdio.h>
 int	close_win(int keycode, t_mlx_info *vars)
 {
-	// printf("keycode: %d\n", keycode);
+	printf("keycode: %d\n", keycode);
 	// close when esc key is pressed.
 	if (keycode == 53)
 	{
@@ -232,6 +232,13 @@ int	close_win(int keycode, t_mlx_info *vars)
 	{
 		set_isometric_base(vars->map_info.base);
 	}
+	if (keycode == 0)
+	{
+		if (vars->map_info.axis_flg == 0)
+			vars->map_info.axis_flg = 1;
+		else
+			vars->map_info.axis_flg = 0;
+	}
 	return (0);
 }
 
@@ -271,7 +278,8 @@ void	draw_map_on_img(t_map_info map_info, t_data img)
 	rotate_z(base, (map_info.theta_rz * M_PI / 180));
 	set_inverse_matrix(base);
 
-	put_axis(img, map_info, base);
+	if (map_info.axis_flg)
+		put_axis(img, map_info, base);
 
 	i = 0;
 	while (i < map_info.height)
@@ -307,7 +315,6 @@ double	set_initial_scale(t_map_info map_info)
 		up = 2;
 	return (up);
 }
-
 
 int	main(int argc, char *argv[])
 {

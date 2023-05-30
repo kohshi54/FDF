@@ -48,6 +48,7 @@ typedef struct s_map_info
 	double			theta_ry;
 	double			theta_rz;
 	double			base[3][3];
+	bool			axis_flg;
 }	t_map_info;
 
 typedef struct	s_mlx_info {
