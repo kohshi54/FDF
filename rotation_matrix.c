@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   rotation_matrix.c                                  :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: kyamaguc <kyamaguc@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/05/30 20:53:26 by kyamaguc          #+#    #+#             */
+/*   Updated: 2023/05/30 20:53:26 by kyamaguc         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "fdf.h"
 
 void	copy_matrix(double dst[3][3], double src[3][3])
@@ -26,11 +38,9 @@ void	rotate_x(double base[3][3], double radian)
 	base[0][0] = tmp[0][0];
 	base[1][0] = tmp[1][0] * cos(radian) + tmp[2][0] * sin(radian);
 	base[2][0] = -tmp[1][0] * sin(radian) + tmp[2][0] * cos(radian);
-
 	base[0][1] = tmp[0][1];
 	base[1][1] = tmp[1][1] * cos(radian) + tmp[2][1] * sin(radian);
 	base[2][1] = -tmp[1][1] * sin(radian) + tmp[2][1] * cos(radian);
-
 	base[0][2] = tmp[0][2];
 	base[1][2] = tmp[1][2] * cos(radian) + tmp[2][2] * sin(radian);
 	base[2][2] = -tmp[1][2] * sin(radian) + tmp[2][2] * cos(radian);
@@ -44,11 +54,9 @@ void	rotate_y(double base[3][3], double radian)
 	base[0][0] = tmp[2][0] * sin(radian) + tmp[0][0] * cos(radian);
 	base[1][0] = tmp[1][0];
 	base[2][0] = tmp[2][0] * cos(radian) - tmp[0][0] * sin(radian);
-
 	base[0][1] = tmp[2][1] * sin(radian) + tmp[0][1] * cos(radian);
 	base[1][1] = tmp[1][1];
 	base[2][1] = tmp[2][1] * cos(radian) - tmp[0][1] * sin(radian);
-
 	base[0][2] = tmp[2][2] * sin(radian) + tmp[0][2] * cos(radian);
 	base[1][2] = tmp[1][2];
 	base[2][2] = tmp[2][2] * cos(radian) - tmp[0][2] * sin(radian);
@@ -62,11 +70,9 @@ void	rotate_z(double base[3][3], double radian)
 	base[0][0] = tmp[0][0] * cos(radian) - tmp[1][0] * sin(radian);
 	base[1][0] = tmp[0][0] * sin(radian) + tmp[1][0] * cos(radian);
 	base[2][0] = tmp[2][0];
-
 	base[0][1] = tmp[0][1] * cos(radian) - tmp[1][1] * sin(radian);
 	base[1][1] = tmp[0][1] * sin(radian) + tmp[1][1] * cos(radian);
 	base[2][1] = tmp[2][1];
-
 	base[0][2] = tmp[0][2] * cos(radian) - tmp[1][2] * sin(radian);
 	base[1][2] = tmp[0][2] * sin(radian) + tmp[1][2] * cos(radian);
 	base[2][2] = tmp[2][2];
