@@ -102,7 +102,7 @@ void	set_standard_base(double base_vector[3][3])
 	base_vector[2][2] = 1;
 }
 
-void	get_and_set_inverse_matrix(double base_vector[3][3])
+void	set_inverse_matrix(double base_vector[3][3])
 {
 	size_t	x;
 	size_t	y;
@@ -172,7 +172,7 @@ t_coordinate	translate(t_coordinate P, t_map_info map_info, double base[3][3])
 #include <stdio.h>
 int	close_win(int keycode, t_mlx_info *vars)
 {
-	printf("keycode: %d\n", keycode);
+	// printf("keycode: %d\n", keycode);
 	// close when esc key is pressed.
 	if (keycode == 53)
 	{
@@ -251,6 +251,14 @@ int	loop_handler(t_mlx_info *mlx_info)
 	return (0);
 }
 
+void	put_axis(t_data img, t_map_info map_info, double base[3][3])
+{
+	put_line(&img, translate((t_coordinate){map_info.width/2, map_info.height/2, 0, 0xFFFFFF}, map_info, base), translate((t_coordinate){100, 0, 0, 0xFFFFFF}, map_info, base), 0xFF0000);
+	put_line(&img, translate((t_coordinate){map_info.width/2, map_info.height/2, 0, 0xFFFFFF}, map_info, base), translate((t_coordinate){0, 100, 0, 0xFFFFFF}, map_info, base), 0x00FF00);
+	put_line(&img, translate((t_coordinate){map_info.width/2, map_info.height/2, 0, 0xFFFFFF}, map_info, base), translate((t_coordinate){0, 0, 100, 0xFFFFFF}, map_info, base), 0x0000FF);
+
+}
+
 void	draw_map_on_img(t_map_info map_info, t_data img)
 {
 	size_t	i;
@@ -261,7 +269,9 @@ void	draw_map_on_img(t_map_info map_info, t_data img)
 	rotate_x(base, (map_info.theta_rx * M_PI / 180));
 	rotate_y(base, (map_info.theta_ry * M_PI / 180));
 	rotate_z(base, (map_info.theta_rz * M_PI / 180));
-	get_and_set_inverse_matrix(base);
+	set_inverse_matrix(base);
+
+	put_axis(img, map_info, base);
 
 	i = 0;
 	while (i < map_info.height)
