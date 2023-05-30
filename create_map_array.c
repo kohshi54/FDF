@@ -19,7 +19,7 @@ void	print_map(t_coordinate ***map, size_t width, size_t height)
 	}
 }
 
-int		get_digit(char *line)
+int	get_digit(char *line)
 {
 	int	i;
 
@@ -29,51 +29,48 @@ int		get_digit(char *line)
 	return (i);
 }
 
-int		get_color(char *line)
+int	get_color(char *line, char *hex)
 {
 	int		i;
 	int		num;
-	char	*hex;
 
 	while (ft_isdigit(*line))
 		line++;
-	if (line && *line == ',')
+	line++;
+	if (line && !ft_strncmp(line, "0x", 2))
 	{
-		line++;
-		if (ft_strncmp(line, "0x", 2) == 0)
-		{
-			if (ft_strncmp(line, "0xFFFFFF", 8) == 0)
-				return (0xFFFFFF);
-			if (ft_strncmp(line, "0xFF0000", 8) == 0)
-				return (0xFF0000);
-			if (ft_strncmp(line, "0x00FF00", 8) == 0)
-				return (0x00FF00);
-			if (ft_strncmp(line, "0x0000FF", 8) == 0)
-				return (0x00FF00);
-			hex = "0123456789abcdef";
-			line += 2;
-			i = get_digit(line) - 1;
-			num = 0;
-			while (i >= 0)
-				num += (ft_strchr(hex, *line++) - hex) * pow(16, i--);;
-			return (num);
-		}
+		if (ft_strncmp(line, "0xFFFFFF", 8) == 0)
+			return (0xFFFFFF);
+		if (ft_strncmp(line, "0xFF0000", 8) == 0)
+			return (0xFF0000);
+		if (ft_strncmp(line, "0x00FF00", 8) == 0)
+			return (0x00FF00);
+		if (ft_strncmp(line, "0x0000FF", 8) == 0)
+			return (0x00FF00);
+		line += 2;
+		i = get_digit(line) - 1;
+		num = 0;
+		while (i >= 0)
+			num += (ft_strchr(hex, *line++) - hex) * pow(16, i--);
+		return (num);
 	}
 	return (0xFFFFFF);
 }
 
-void	fill_line(t_coordinate ***map, char **line_spl, size_t counter_y, size_t width, t_map_info *map_info)
+void	fill_line(t_coordinate ***map, char **line_spl, \
+	size_t counter_y, t_map_info *map_info)
 {
 	size_t	counter_x;
 
 	counter_x = 0;
-	while (counter_x < width)
+	while (counter_x < map_info->width)
 	{
 		map[counter_y][counter_x] = malloc(sizeof(t_coordinate));
 		map[counter_y][counter_x]->x = counter_x;
 		map[counter_y][counter_x]->y = counter_y;
 		map[counter_y][counter_x]->z = ft_atoi(line_spl[counter_x]);
-		map[counter_y][counter_x]->color = get_color(line_spl[counter_x]);
+		map[counter_y][counter_x]->color = get_color(line_spl[counter_x], \
+			"0123456789abcdef");
 		if ((int)map_info->depth < map[counter_y][counter_x]->z)
 		{
 			map_info->depth = map[counter_y][counter_x]->z;
@@ -98,9 +95,10 @@ void	create_map(char *filename, t_map_info *map_info)
 	while (counter_y < map_info->height)
 	{
 		line = get_next_line(fd);
-		map_info->map[counter_y] = malloc(sizeof(t_coordinate *) * map_info->width);
+		map_info->map[counter_y] = malloc(sizeof(t_coordinate *) \
+			* map_info->width);
 		line_spl = ft_split(line, ' ');
-		fill_line(map_info->map, line_spl, counter_y, map_info->width, map_info);
+		fill_line(map_info->map, line_spl, counter_y, map_info);
 		counter_y++;
 	}
 }
