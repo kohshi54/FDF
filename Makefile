@@ -1,6 +1,6 @@
 NAME = fdf
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -fsanitize=address
+CFLAGS = -Wall -Wextra -Werror
 
 SRCS = fdf.c ft_put_line.c create_map_array.c get_width_height.c
 OBJS = $(SRCS:%.c=%.o)
