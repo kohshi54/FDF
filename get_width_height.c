@@ -6,7 +6,7 @@
 /*   By: kyamaguc <kyamaguc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/30 20:53:12 by kyamaguc          #+#    #+#             */
-/*   Updated: 2023/05/31 17:10:39 by kyamaguc         ###   ########.fr       */
+/*   Updated: 2023/05/31 17:21:33 by kyamaguc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,19 +45,6 @@ size_t	count_words(char **line)
 		line++;
 	}
 	return (count);
-}
-
-void	free_split(char **p)
-{
-	char	**head;
-
-	head = p;
-	while (*p)
-	{
-		free(*p);
-		p++;
-	}
-	free(head);
 }
 
 size_t	split_and_count_number_of_words(char *line)
