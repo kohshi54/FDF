@@ -6,7 +6,7 @@
 /*   By: kyamaguc <kyamaguc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/30 20:52:39 by kyamaguc          #+#    #+#             */
-/*   Updated: 2023/05/30 21:03:10 by kyamaguc         ###   ########.fr       */
+/*   Updated: 2023/05/31 17:17:51 by kyamaguc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,6 +93,19 @@ void	fill_line(t_coordinate ***map, char **line_spl, \
 	}
 }
 
+void	free_split2(char **p)
+{
+	char	**head;
+
+	head = p;
+	while (*p)
+	{
+		free(*p);
+		p++;
+	}
+	free(head);
+}
+
 void	create_map(char *filename, t_map_info *map_info)
 {
 	int				fd;
@@ -107,18 +120,24 @@ void	create_map(char *filename, t_map_info *map_info)
 	if (!(map_info->map))
 		exit(EXIT_FAILURE);
 	fd = open(filename, O_RDONLY);
+	if (fd == -1)
+		exit(EXIT_FAILURE);
 	counter_y = 0;
 	while (counter_y < map_info->height)
 	{
 		line = get_next_line(fd);
+		if (!line)
+			exit(EXIT_FAILURE);
 		map_info->map[counter_y] = malloc(sizeof(t_coordinate *) \
 			* map_info->width);
 		if (!(map_info->map[counter_y]))
 			exit(EXIT_FAILURE);
 		line_spl = ft_split(line, ' ');
+		free(line);
 		if (!line_spl)
 			exit(EXIT_FAILURE);
 		fill_line(map_info->map, line_spl, counter_y, map_info);
+		free_split2(line_spl);
 		counter_y++;
 	}
 }
