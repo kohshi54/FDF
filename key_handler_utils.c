@@ -6,7 +6,7 @@
 /*   By: kyamaguc <kyamaguc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/30 20:53:21 by kyamaguc          #+#    #+#             */
-/*   Updated: 2023/05/30 20:53:21 by kyamaguc         ###   ########.fr       */
+/*   Updated: 2023/05/31 16:35:51 by kyamaguc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,9 +50,15 @@ void	projection(int keycode, t_mlx_info *vars)
 		set_standard_base(vars->map_info.base);
 		vars->map_info.theta_rx = 0;
 		vars->map_info.theta_ry = 0;
+		vars->map_info.theta_rz = 0;
 	}
 	if (keycode == I_KEY)
+	{
 		set_isometric_base(vars->map_info.base);
+		vars->map_info.theta_rx = 0;
+		vars->map_info.theta_ry = 0;
+		vars->map_info.theta_rz = 0;
+	}
 }
 
 void	axis(int keycode, t_mlx_info *vars)

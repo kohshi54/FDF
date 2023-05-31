@@ -6,7 +6,7 @@
 /*   By: kyamaguc <kyamaguc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/30 20:53:12 by kyamaguc          #+#    #+#             */
-/*   Updated: 2023/05/30 20:53:13 by kyamaguc         ###   ########.fr       */
+/*   Updated: 2023/05/31 18:24:24 by kyamaguc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,18 @@ size_t	get_height(char *filename)
 {
 	int		fd;
 	size_t	count;
+	char	*line;
 
-	fd = open(filename, O_RDONLY);
+	fd = ft_open(filename, O_RDONLY);
 	count = 0;
-	while (get_next_line(fd))
+	while (1)
+	{
+		line = get_next_line(fd);
+		if (!line)
+			break ;
+		free(line);
 		count++;
+	}
 	close(fd);
 	return (count);
 }
@@ -41,11 +48,12 @@ size_t	count_words(char **line)
 size_t	split_and_count_number_of_words(char *line)
 {
 	char	**line_spl;
+	size_t	count;
 
-	line_spl = ft_split(line, ' ');
-	if (!line_spl)
-		exit(EXIT_FAILURE);
-	return (count_words(line_spl));
+	line_spl = ft_split_wrapper(line, ' ');
+	count = count_words(line_spl);
+	free_split(line_spl);
+	return (count);
 }
 
 size_t	get_width(char *filename)
@@ -55,7 +63,7 @@ size_t	get_width(char *filename)
 	char	*line;
 	size_t	base;
 
-	fd = open(filename, O_RDONLY);
+	fd = ft_open(filename, O_RDONLY);
 	line = get_next_line(fd);
 	if (!line)
 		exit(EXIT_FAILURE);

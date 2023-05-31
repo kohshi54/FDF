@@ -6,7 +6,7 @@
 /*   By: kyamaguc <kyamaguc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/30 20:52:44 by kyamaguc          #+#    #+#             */
-/*   Updated: 2023/05/30 20:52:44 by kyamaguc         ###   ########.fr       */
+/*   Updated: 2023/05/31 16:12:39 by kyamaguc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,15 +16,18 @@ void	put_axis(t_data img, t_map_info map_info, double base[3][3])
 {
 	put_line(&img, translate((t_coordinate){map_info.width / 2, \
 			map_info.height / 2, 0, 0xFFFFFF}, map_info, base), \
-			translate((t_coordinate){100, 0, 0, 0xFFFFFF}, \
+			translate((t_coordinate){map_info.width / 2 + 100, \
+			map_info.height / 2, 0, 0xFFFFFF}, \
 			map_info, base), 0xFF0000);
 	put_line(&img, translate((t_coordinate){map_info.width / 2, \
 			map_info.height / 2, 0, 0xFFFFFF}, map_info, base), \
-			translate((t_coordinate){0, 100, 0, 0xFFFFFF}, \
+			translate((t_coordinate){map_info.width / 2, \
+			map_info.height / 2 + 100, 0, 0xFFFFFF}, \
 			map_info, base), 0x00FF00);
 	put_line(&img, translate((t_coordinate){map_info.width / 2, \
 			map_info.height / 2, 0, 0xFFFFFF}, map_info, base), \
-			translate((t_coordinate){0, 0, 100, 0xFFFFFF}, \
+			translate((t_coordinate){map_info.width / 2, \
+			map_info.height / 2, 100, 0xFFFFFF}, \
 			map_info, base), 0x0000FF);
 }
 
