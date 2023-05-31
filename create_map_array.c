@@ -6,7 +6,7 @@
 /*   By: kyamaguc <kyamaguc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/30 20:52:39 by kyamaguc          #+#    #+#             */
-/*   Updated: 2023/05/31 18:14:06 by kyamaguc         ###   ########.fr       */
+/*   Updated: 2023/05/31 18:23:32 by kyamaguc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,10 +111,7 @@ void	create_map(char *filename, t_map_info *map_info)
 			exit(EXIT_FAILURE);
 		map_info->map[counter_y] = ft_malloc(sizeof(t_coordinate *) \
 			* map_info->width);
-		line_spl = ft_split(line, ' ');
-		free(line);
-		if (!line_spl)
-			exit(EXIT_FAILURE);
+		line_spl = ft_split_wrapper(line, ' ');
 		fill_line(map_info->map, line_spl, counter_y, map_info);
 		free_split(line_spl);
 		counter_y++;

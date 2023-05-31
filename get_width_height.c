@@ -6,7 +6,7 @@
 /*   By: kyamaguc <kyamaguc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/30 20:53:12 by kyamaguc          #+#    #+#             */
-/*   Updated: 2023/05/31 18:12:34 by kyamaguc         ###   ########.fr       */
+/*   Updated: 2023/05/31 18:24:24 by kyamaguc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ size_t	get_height(char *filename)
 	{
 		line = get_next_line(fd);
 		if (!line)
-			break;
+			break ;
 		free(line);
 		count++;
 	}
@@ -50,10 +50,7 @@ size_t	split_and_count_number_of_words(char *line)
 	char	**line_spl;
 	size_t	count;
 
-	line_spl = ft_split(line, ' ');
-	free(line);
-	if (!line_spl)
-		exit(EXIT_FAILURE);
+	line_spl = ft_split_wrapper(line, ' ');
 	count = count_words(line_spl);
 	free_split(line_spl);
 	return (count);
