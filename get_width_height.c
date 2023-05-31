@@ -6,7 +6,7 @@
 /*   By: kyamaguc <kyamaguc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/30 20:53:12 by kyamaguc          #+#    #+#             */
-/*   Updated: 2023/05/31 17:31:36 by kyamaguc         ###   ########.fr       */
+/*   Updated: 2023/05/31 18:12:34 by kyamaguc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,7 @@ size_t	get_height(char *filename)
 	size_t	count;
 	char	*line;
 
-	fd = open(filename, O_RDONLY);
-	if (fd == -1)
-		exit(EXIT_FAILURE);
+	fd = ft_open(filename, O_RDONLY);
 	count = 0;
 	while (1)
 	{
@@ -68,9 +66,7 @@ size_t	get_width(char *filename)
 	char	*line;
 	size_t	base;
 
-	fd = open(filename, O_RDONLY);
-	if (fd == -1)
-		exit(EXIT_FAILURE);
+	fd = ft_open(filename, O_RDONLY);
 	line = get_next_line(fd);
 	if (!line)
 		exit(EXIT_FAILURE);

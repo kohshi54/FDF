@@ -6,7 +6,7 @@
 /*   By: kyamaguc <kyamaguc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/30 20:53:00 by kyamaguc          #+#    #+#             */
-/*   Updated: 2023/05/31 17:21:57 by kyamaguc         ###   ########.fr       */
+/*   Updated: 2023/05/31 18:10:00 by kyamaguc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,5 +141,9 @@ void			draw_map_on_img(t_map_info map_info, t_data img);
 
 /* free_utils.c */
 void	free_split(char **p);
+
+/* system_call_wrapper.c */
+void	*ft_malloc(size_t size);
+int		ft_open(const char *path, int oflag);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: kyamaguc <kyamaguc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/31 16:42:06 by kyamaguc          #+#    #+#             */
-/*   Updated: 2023/05/31 16:42:10 by kyamaguc         ###   ########.fr       */
+/*   Updated: 2023/05/31 18:09:46 by kyamaguc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ void	*ft_malloc(size_t size)
 	p = malloc(size);
 	if (!p)
 		exit(EXIT_FAILURE);
+	return (p);
 }
 
 int	ft_open(const char *path, int oflag)
@@ -28,4 +29,5 @@ int	ft_open(const char *path, int oflag)
 	fd = open(path, oflag);
 	if (fd == -1)
 		exit(EXIT_FAILURE);
+	return (fd);
 }

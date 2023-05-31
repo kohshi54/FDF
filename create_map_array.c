@@ -6,7 +6,7 @@
 /*   By: kyamaguc <kyamaguc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/30 20:52:39 by kyamaguc          #+#    #+#             */
-/*   Updated: 2023/05/31 17:20:59 by kyamaguc         ###   ########.fr       */
+/*   Updated: 2023/05/31 18:14:06 by kyamaguc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,9 +77,7 @@ void	fill_line(t_coordinate ***map, char **line_spl, \
 	counter_x = 0;
 	while (counter_x < map_info->width)
 	{
-		map[counter_y][counter_x] = malloc(sizeof(t_coordinate));
-		if (!map[counter_y][counter_x])
-			exit(EXIT_FAILURE);
+		map[counter_y][counter_x] = ft_malloc(sizeof(t_coordinate));
 		map[counter_y][counter_x]->x = counter_x;
 		map[counter_y][counter_x]->y = counter_y;
 		map[counter_y][counter_x]->z = ft_atoi(line_spl[counter_x]);
@@ -103,22 +101,16 @@ void	create_map(char *filename, t_map_info *map_info)
 	map_info->height = get_height(filename);
 	map_info->width = get_width(filename);
 	map_info->depth = 0;
-	map_info->map = malloc(sizeof(t_coordinate *) * map_info->height);
-	if (!(map_info->map))
-		exit(EXIT_FAILURE);
-	fd = open(filename, O_RDONLY);
-	if (fd == -1)
-		exit(EXIT_FAILURE);
+	map_info->map = ft_malloc(sizeof(t_coordinate *) * map_info->height);
+	fd = ft_open(filename, O_RDONLY);
 	counter_y = 0;
 	while (counter_y < map_info->height)
 	{
 		line = get_next_line(fd);
 		if (!line)
 			exit(EXIT_FAILURE);
-		map_info->map[counter_y] = malloc(sizeof(t_coordinate *) \
+		map_info->map[counter_y] = ft_malloc(sizeof(t_coordinate *) \
 			* map_info->width);
-		if (!(map_info->map[counter_y]))
-			exit(EXIT_FAILURE);
 		line_spl = ft_split(line, ' ');
 		free(line);
 		if (!line_spl)
@@ -127,4 +119,5 @@ void	create_map(char *filename, t_map_info *map_info)
 		free_split(line_spl);
 		counter_y++;
 	}
+	close(fd);
 }
