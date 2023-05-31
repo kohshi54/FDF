@@ -6,7 +6,7 @@
 /*   By: kyamaguc <kyamaguc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/30 20:53:12 by kyamaguc          #+#    #+#             */
-/*   Updated: 2023/05/31 17:21:33 by kyamaguc         ###   ########.fr       */
+/*   Updated: 2023/05/31 17:31:36 by kyamaguc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,7 @@ size_t	split_and_count_number_of_words(char *line)
 	size_t	count;
 
 	line_spl = ft_split(line, ' ');
+	free(line);
 	if (!line_spl)
 		exit(EXIT_FAILURE);
 	count = count_words(line_spl);
@@ -74,14 +75,12 @@ size_t	get_width(char *filename)
 	if (!line)
 		exit(EXIT_FAILURE);
 	base = split_and_count_number_of_words(line);
-	free(line);
 	while (1)
 	{
 		line = get_next_line(fd);
 		if (!line)
 			break ;
 		count = split_and_count_number_of_words(line);
-		free(line);
 		if (count != base)
 		{
 			ft_printf("error map");
