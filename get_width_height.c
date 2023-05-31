@@ -1,7 +1,16 @@
-#include <stdio.h>
-#include <fcntl.h>
-#include "LIBFT/get_next_line.h"
-#include "LIBFT/libft.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_width_height.c                                 :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: kyamaguc <kyamaguc@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/05/30 20:53:12 by kyamaguc          #+#    #+#             */
+/*   Updated: 2023/05/30 20:53:13 by kyamaguc         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "fdf.h"
 
 size_t	get_height(char *filename)
 {
@@ -51,24 +60,18 @@ size_t	get_width(char *filename)
 	if (!line)
 		exit(EXIT_FAILURE);
 	base = split_and_count_number_of_words(line);
-	while ((line = get_next_line(fd)))
+	while (1)
 	{
+		line = get_next_line(fd);
+		if (!line)
+			break ;
 		count = split_and_count_number_of_words(line);
 		if (count != base)
 		{
-			// printf("error map");
+			ft_printf("error map");
 			exit(EXIT_FAILURE);
 		}
 	}
 	close(fd);
 	return (count);
 }
-
-// int	main(int argc, char *argv[])
-// {
-// 	if (argc != 2)
-// 		return (0);
-// 	printf("%d\n", ft_wc_l(argv[1]));
-// 	printf("%d\n", count_width(argv[1]));
-// 	return (0);
-// }

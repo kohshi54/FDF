@@ -1,8 +1,8 @@
 NAME = fdf
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -fsanitize=address
+CFLAGS = -Wall -Wextra -Werror
 
-SRCS = fdf.c ft_put_line.c create_map_array.c get_width_height.c
+SRCS = fdf.c ft_put_line.c create_map_array.c get_width_height.c rotation_matrix.c set_base.c translation.c key_handler_utils.c event_handler.c init_info.c draw_map.c
 OBJS = $(SRCS:%.c=%.o)
 
 LIBFT = LIBFT/libft.a
